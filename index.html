@@ -1,0 +1,2613 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BROKEN HOPES — Discord</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+  :root {
+    --yellow:  #ffff00;
+    --white:   #ffffff;
+    --black:   #000000;
+    --grey:    #1c1c1c;
+    --dgrey:   #111111;
+    --soul-red:    #ff3333;
+    --soul-cyan:   #33ccff;
+    --soul-orange: #ff8800;
+    --soul-blue:   #4455ff;
+    --soul-purple: #cc33ff;
+    --soul-green:  #33ff66;
+    --soul-yellow: #ffff00;
+    --text-dim: #aaaaaa;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+  body, * {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ff3333' d='M8 14s-6-4.35-6-8a6 6 0 0 1 12 0c0 3.65-6 8-6 8z'/%3E%3C/svg%3E") 8 14, auto;
+  }
+
+  /* ═══════════════════════════════════════
+     CUSTOM PIXEL SCROLLBAR
+     ═══════════════════════════════════════ */
+  ::-webkit-scrollbar { width: 14px; }
+  ::-webkit-scrollbar-track { background: var(--black); border-left: 2px solid #222; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--yellow); border: 3px solid var(--black);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.2);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: #ffff66; }
+  * { scrollbar-width: thin; scrollbar-color: var(--yellow) var(--black); }
+
+  /* ═══════════════════════════════════════
+     SCREEN SHAKE + FLASH EFFECTS
+     ═══════════════════════════════════════ */
+  @keyframes screenShake {
+    0%, 100% { transform: translate(0,0); }
+    10% { transform: translate(-3px, 2px); }
+    20% { transform: translate(3px, -2px); }
+    30% { transform: translate(-2px, 3px); }
+    40% { transform: translate(2px, -1px); }
+    50% { transform: translate(-1px, 2px); }
+    60% { transform: translate(1px, -2px); }
+    70% { transform: translate(-2px, 1px); }
+    80% { transform: translate(2px, -1px); }
+    90% { transform: translate(-1px, 1px); }
+  }
+  .shake { animation: screenShake 0.35s ease; }
+
+  @keyframes yellowFlash {
+    0% { opacity: 0; }
+    15% { opacity: 0.15; }
+    100% { opacity: 0; }
+  }
+  .flash-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--yellow);
+    pointer-events: none;
+    animation: yellowFlash 0.6s ease forwards;
+  }
+
+  .px-box {
+    border: 4px solid var(--white);
+    box-shadow: inset -3px -3px 0 rgba(0,0,0,.5), inset 3px 3px 0 rgba(255,255,255,.15);
+    background: var(--black);
+  }
+
+  /* CSS-only stars — zero JS, zero canvas, zero RAF */
+  .stars-layer {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    overflow: hidden;
+  }
+  .stars-layer::before,
+  .stars-layer::after,
+  .stars-layer > span {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 1px; height: 1px;
+    border-radius: 50%;
+    background: transparent;
+    will-change: transform;
+  }
+  .stars-layer::before {
+    box-shadow:
+      83px 214px #fff, 412px 67px #fff, 731px 329px #fff, 197px 512px #fff,
+      564px 183px #fff, 22px 748px #fff, 889px 421px #fff, 345px 660px #fff,
+      677px 95px #fff, 134px 387px #fff, 492px 811px #fff, 815px 254px #fff,
+      267px 573px #fff, 641px 742px #fff, 38px 129px #fff, 926px 607px #fff,
+      178px 923px #fff, 553px 460px #fff, 768px 38px #fff, 311px 842px #fff,
+      445px 301px #fff, 72px 668px #fff, 619px 524px #fff, 854px 177px #fff,
+      231px 416px #fff, 497px 731px #fff, 162px 59px #fff, 733px 612px #fff,
+      389px 243px #fff, 906px 875px #fff, 54px 492px #fff, 581px 138px #fff,
+      247px 784px #fff, 712px 361px #fff, 143px 927px #fff, 463px 68px #fff,
+      837px 532px #fff, 295px 193px #fff, 683px 849px #fff, 19px 374px #fff,
+      528px 617px #fff, 791px 123px #fff, 364px 456px #fff, 88px 832px #fff,
+      615px 271px #fff, 942px 498px #fff, 211px 743px #fff, 476px 384px #fff,
+      804px 657px #fff, 127px 178px #fff, 659px 913px #fff, 332px 541px #fff,
+      756px 79px #fff, 43px 296px #fff, 587px 723px #fff, 873px 411px #fff,
+      221px 864px #fff, 514px 207px #fff, 168px 648px #fff, 743px 482px #fff,
+      398px 137px #fff, 67px 563px #fff, 832px 314px #fff, 283px 971px #fff,
+      617px 596px #fff, 451px 829px #fff, 95px 42px #fff, 726px 167px #fff,
+      347px 718px #fff, 891px 343px #fff, 153px 483px #fff, 539px 912px #fff,
+      782px 231px #fff, 316px 667px #fff, 629px 408px #fff, 74px 879px #fff,
+      458px 154px #fff, 817px 741px #fff, 193px 325px #fff, 673px 587px #fff;
+    animation: drift 90s linear infinite;
+  }
+  .stars-layer::after {
+    width: 2px; height: 2px;
+    box-shadow:
+      152px 334px #ddd, 487px 97px #ddd, 761px 463px #ddd, 273px 692px #ddd,
+      634px 218px #ddd, 48px 857px #ddd, 912px 541px #ddd, 376px 174px #ddd,
+      709px 726px #ddd, 224px 589px #ddd, 541px 43px #ddd, 867px 382px #ddd,
+      313px 817px #ddd, 678px 657px #ddd, 127px 271px #ddd, 453px 924px #ddd,
+      796px 148px #ddd, 237px 476px #ddd, 582px 813px #ddd, 941px 307px #ddd,
+      184px 638px #ddd, 617px 492px #ddd, 359px 163px #ddd, 824px 719px #ddd,
+      73px 541px #ddd, 448px 284px #ddd, 713px 867px #ddd, 191px 412px #ddd,
+      556px 73px #ddd, 879px 598px #ddd, 318px 931px #ddd, 643px 347px #ddd,
+      86px 762px #ddd, 427px 519px #ddd, 758px 194px #ddd, 262px 843px #ddd;
+    animation: drift 120s linear infinite;
+  }
+  .stars-layer > span {
+    width: 3px; height: 3px;
+    box-shadow:
+      243px 412px #fff, 628px 754px #fff, 87px 163px #fff, 451px 538px #fff,
+      819px 291px #fff, 164px 687px #fff, 573px 924px #fff, 736px 67px #fff,
+      312px 843px #fff, 947px 478px #fff, 58px 631px #fff, 489px 319px #fff;
+    animation: drift 160s linear infinite;
+    opacity: .6;
+  }
+  @keyframes drift {
+    from { transform: translateY(0); }
+    to   { transform: translateY(100vh); }
+  }
+
+  /* ═══════════════════════════════════════
+     DISCORD LIVE STATS BAR
+     ═══════════════════════════════════════ */
+  #discord-stats-bar {
+    position: fixed; top: 56px; left: 0; right: 0; z-index: 400;
+    background: var(--dgrey);
+    border-bottom: 3px solid #333;
+    padding: 8px 20px;
+    display: flex; align-items: center; justify-content: center;
+    gap: clamp(16px, 4vw, 48px);
+    font-size: clamp(.38rem, 1vw, .5rem);
+    letter-spacing: .08em;
+    opacity: 0; transform: translateY(-10px);
+    transition: opacity .4s, transform .4s;
+  }
+  #discord-stats-bar.ds-loaded { opacity: 1; transform: none; }
+  .ds-item { display: flex; align-items: center; gap: 8px; }
+  .ds-icon { font-size: clamp(.6rem, 1.5vw, .85rem); }
+  .ds-label { color: var(--text-dim); }
+  .ds-val { color: var(--yellow); font-weight: 700; min-width: 2ch; }
+  .ds-online-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--soul-green);
+    box-shadow: 0 0 6px var(--soul-green);
+    animation: pulseDot 1.5s ease-in-out infinite;
+  }
+  @keyframes pulseDot { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:.6} }
+
+  /* ═══════════════════════════════════════
+     NAV
+     ═══════════════════════════════════════ */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:500;
+    background:var(--black); border-bottom:4px solid var(--white);
+    padding:0 40px; height:56px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .nav-logo {
+    font-size:.6rem; color:var(--yellow); text-decoration:none;
+    display:flex; align-items:center; gap:10px; letter-spacing:.1em;
+  }
+  .nav-heart { color:var(--soul-red); animation:heartbeat .8s ease-in-out infinite; display:inline-block; }
+  @keyframes heartbeat { 0%,100%{transform:scale(1)} 50%{transform:scale(1.35)} }
+
+  .nav-links { display:flex; gap:0; list-style:none; }
+  .nav-links li a {
+    display:block; padding:0 16px; height:56px; line-height:56px;
+    font-size:.5rem; color:var(--white); text-decoration:none;
+    letter-spacing:.05em; border-left:2px solid transparent;
+    transition:background .15s, color .15s;
+  }
+  .nav-links li a:hover { background:var(--grey); color:var(--yellow); border-left-color:var(--yellow); }
+
+  .nav-actions { display:flex; gap:8px; align-items:center; }
+  .nav-btn {
+    font-family:'Press Start 2P',monospace; font-size:.42rem;
+    background:none; border:2px solid #444; color:#666;
+    padding:5px 10px; cursor:pointer; transition:all .15s;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .nav-btn:hover { border-color:var(--yellow); color:var(--yellow); }
+  .nav-btn.active { border-color:var(--soul-green); color:var(--soul-green); }
+  .nav-btn-sfx { font-size:.55rem; }
+
+  /* ═══════════════════════════════════════
+     SECTION NAVIGATION DOTS (right side)
+     ═══════════════════════════════════════ */
+  #nav-dots {
+    position: fixed; right: 16px; top: 50%; transform: translateY(-50%);
+    z-index: 450; display: flex; flex-direction: column; gap: 14px;
+  }
+  .nav-dot {
+    width: 12px; height: 12px; border: 2px solid #555;
+    background: transparent; cursor: pointer;
+    transition: all .2s; position: relative;
+  }
+  .nav-dot:hover { border-color: var(--yellow); background: rgba(255,255,0,.2); }
+  .nav-dot.active { border-color: var(--yellow); background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
+  .nav-dot-label {
+    position: absolute; right: 22px; top: 50%; transform: translateY(-50%);
+    font-size: .38rem; color: var(--text-dim); white-space: nowrap;
+    opacity: 0; transition: opacity .15s; pointer-events: none;
+    font-family: 'Press Start 2P', monospace;
+  }
+  .nav-dot:hover .nav-dot-label { opacity: 1; }
+
+  /* ═══════════════════════════════════════
+     HERO
+     ═══════════════════════════════════════ */
+  #inicio {
+    min-height:100vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    padding:120px 24px 60px; position:relative; z-index:1; text-align:center;
+  }
+  .hero-chapter {
+    font-size:.48rem; color:var(--text-dim); letter-spacing:.2em;
+    margin-bottom:36px; opacity:0; animation:fadein .5s .3s forwards;
+  }
+  .hero-title {
+    font-size:clamp(1.6rem,7vw,4.2rem); line-height:1.25; margin-bottom:44px;
+    opacity:0; animation:fadein .5s .55s forwards;
+  }
+  .hero-title .t1 { display:block; color:var(--white); margin-bottom:6px; }
+  .hero-title .t2 {
+    display:block; color:var(--yellow);
+    text-shadow:0 0 24px rgba(255,255,0,.55), 3px 3px 0 rgba(180,180,0,.4);
+  }
+
+  .dialogue-box {
+    width:100%; max-width:640px; padding:18px 22px 22px;
+    margin:0 auto 36px; text-align:left; position:relative;
+    opacity:0; animation:fadein .5s .8s forwards;
+  }
+  .dialogue-inner { display:flex; align-items:flex-start; gap:14px; }
+  .dialogue-sprite {
+    width:200px; height:200px; flex-shrink:0;
+    image-rendering:pixelated; object-fit:contain; cursor: pointer;
+    transition: transform .3s;
+    animation: floweyBounce 1.6s ease-in-out infinite;
+    transform-origin: center bottom;
+  }
+  .dialogue-sprite:hover { transform: scale(1.08); }
+  @keyframes floweyBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+  .dialogue-right { flex:1; min-width:0; }
+  .dialogue-speaker {
+    font-size:.52rem; color:var(--yellow); margin-bottom:10px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .dialogue-speaker::before { content:''; display:inline-block; width:8px; height:8px; background:var(--yellow); }
+  .dialogue-text { font-family:'VT323',monospace; font-size:1.35rem; color:var(--white); line-height:1.5; min-height:3em; letter-spacing:.02em; }
+  #typewriter-box::after {
+    content:'▶'; color:var(--yellow); font-size:.45rem;
+    animation:blink .55s step-end infinite;
+    position:absolute; bottom:10px; right:14px;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* battle menu */
+  .battle-menu {
+    display:grid; grid-template-columns:repeat(2,1fr);
+    gap:8px; max-width:380px; width:100%;
+    opacity:0; animation:fadein .5s 1.05s forwards;
+  }
+  .battle-btn {
+    display:flex; align-items:center; gap:10px;
+    padding:11px 16px; font-family:'Press Start 2P',monospace; font-size:.55rem;
+    text-decoration:none; background:var(--black); color:var(--white);
+    border:3px solid var(--white); cursor:pointer;
+    transition:background .12s, color .12s;
+  }
+  .battle-btn:hover { background:var(--white); color:var(--black); }
+  .battle-btn.primary { border-color:var(--yellow); color:var(--yellow); }
+  .battle-btn.primary:hover { background:var(--yellow); color:var(--black); }
+  .battle-btn-icon { font-size:.9rem; }
+
+  /* stats bars */
+  .hero-stats {
+    display:flex; flex-direction:column; gap:10px;
+    max-width:360px; width:100%; margin:32px auto 0;
+    opacity:0; animation:fadein .5s 1.25s forwards;
+  }
+  .hp-row { display:flex; align-items:center; gap:10px; }
+  .hp-label { font-size:.45rem; color:var(--text-dim); width:76px; flex-shrink:0; }
+  .hp-bar-wrap { flex:1; height:12px; background:var(--grey); border:2px solid var(--white); overflow:hidden; }
+  .hp-bar { height:100%; transition:width 1.2s ease; }
+  .hp-bar.green  { background:var(--soul-green); }
+  .hp-bar.yellow { background:var(--yellow); }
+  .hp-bar.cyan   { background:var(--soul-cyan); }
+  .hp-val { font-size:.45rem; width:44px; text-align:right; flex-shrink:0; }
+
+  /* ═══════════════════════════════════════
+     SECTION
+     ═══════════════════════════════════════ */
+  .ut-section { position:relative; z-index:1; max-width:1060px; margin:0 auto; padding:80px 40px; }
+
+  .chapter-header {
+    display:flex; align-items:center; gap:14px; margin-bottom:44px;
+  }
+  .chapter-num { font-size:.45rem; color:var(--text-dim); white-space:nowrap; }
+  .chapter-line { flex:1; height:2px; background:var(--white); }
+  .chapter-title { font-size:clamp(.75rem,2.2vw,1.2rem); color:var(--yellow); white-space:nowrap; }
+
+  /* RULES */
+  .rules-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; }
+  .rule-card {
+    padding:22px 20px; background:var(--dgrey);
+    border-left:4px solid var(--yellow); position:relative; transition:background .2s;
+  }
+  .rule-card:hover { background:#201f00; }
+  .rule-card::after {
+    content:attr(data-n); position:absolute; top:12px; right:14px;
+    font-size:1.6rem; color:rgba(255,255,0,.05);
+  }
+  .rule-name { font-size:.52rem; color:var(--yellow); margin-bottom:12px; letter-spacing:.04em; }
+  .rule-text { font-size:.5rem; color:var(--text-dim); line-height:2.1; }
+  .rule-text { font-family:'VT323', monospace; font-size:1.45rem; line-height:1.5; letter-spacing:.03em; }
+  .rule-prefix { color:var(--white); }
+
+  /* STAFF */
+  .roles-wrap { display:flex; flex-direction:column; gap:40px; }
+  .role-header { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+  .soul-icon { font-size:1rem; }
+  .role-name-lbl { font-size:.55rem; letter-spacing:.1em; }
+  .role-name-lbl.owner    { color:var(--soul-yellow); }
+  .role-name-lbl.admin    { color:var(--soul-orange); }
+  .role-name-lbl.mod      { color:var(--soul-cyan); }
+  .role-name-lbl.creative { color:var(--soul-purple); }
+  .role-line { flex:1; height:2px; }
+  .role-line.owner    { background:var(--soul-yellow); }
+  .role-line.admin    { background:var(--soul-orange); }
+  .role-line.mod      { background:var(--soul-cyan); }
+  .role-line.creative { background:var(--soul-purple); }
+
+  .members-row { display:flex; flex-wrap:wrap; gap:10px; }
+  .member-chip {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:9px 16px; background:var(--dgrey); border:2px solid #333;
+    font-size:.52rem; transition:background .15s, border-color .15s;
+  }
+  .member-chip.owner    { border-color:rgba(255,255,0,.25); }
+  .member-chip.admin    { border-color:rgba(255,136,0,.25); }
+  .member-chip.mod      { border-color:rgba(51,204,255,.25); }
+  .member-chip.creative { border-color:rgba(204,51,255,.25); }
+  .member-chip:hover { background:#1a1a1a; }
+  .chip-soul { font-size:.8rem; }
+  .no-members { font-size:.5rem; color:#444; font-style:italic; }
+
+  /* ═══════════════════════════════════════
+     ROADMAP / TIMELINE
+     ═══════════════════════════════════════ */
+  .timeline { position: relative; padding-left: 40px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 14px; top: 0; bottom: 0;
+    width: 3px; background: linear-gradient(to bottom, var(--yellow), var(--soul-red), var(--soul-purple));
+  }
+  .tl-item {
+    position: relative; margin-bottom: 36px;
+    padding: 18px 22px; background: var(--dgrey);
+    border: 2px solid #333; transition: border-color .2s;
+  }
+  .tl-item:hover { border-color: var(--yellow); }
+  .tl-item::before {
+    content: ''; position: absolute;
+    left: -33px; top: 22px;
+    width: 14px; height: 14px;
+    border: 3px solid var(--yellow);
+    background: var(--black);
+  }
+  .tl-item.done::before { background: var(--soul-green); border-color: var(--soul-green); box-shadow: 0 0 8px var(--soul-green); }
+  .tl-item.wip::before { background: var(--yellow); border-color: var(--yellow); animation: pulseDot 1.5s ease-in-out infinite; }
+  .tl-item.future::before { background: var(--black); border-color: #555; }
+  .tl-date { font-size: .38rem; color: var(--text-dim); margin-bottom: 6px; letter-spacing: .1em; }
+  .tl-title { font-size: .58rem; color: var(--white); margin-bottom: 8px; }
+  .tl-desc { font-family: 'VT323', monospace; font-size: 1.25rem; color: var(--text-dim); line-height: 1.6; }
+  .tl-badge {
+    display: inline-block; font-size: .35rem; padding: 3px 8px;
+    border: 2px solid; margin-top: 8px; letter-spacing: .08em;
+  }
+  .tl-badge.done { color: var(--soul-green); border-color: var(--soul-green); }
+  .tl-badge.wip { color: var(--yellow); border-color: var(--yellow); }
+  .tl-badge.future { color: #555; border-color: #555; }
+
+  /* ═══════════════════════════════════════
+     ACHIEVEMENTS / BADGES
+     ═══════════════════════════════════════ */
+  .badges-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+  .badge-card {
+    text-align: center; padding: 24px 14px;
+    background: var(--dgrey); border: 3px solid #333;
+    transition: border-color .2s, transform .2s;
+  }
+  .badge-card:hover { border-color: var(--yellow); transform: translateY(-3px); }
+  .badge-card.locked { opacity: .35; filter: grayscale(1); }
+  .badge-icon { font-size: 2rem; display: block; margin-bottom: 12px; }
+  .badge-name { font-size: .45rem; color: var(--yellow); margin-bottom: 6px; }
+  .badge-desc { font-size: .38rem; color: var(--text-dim); }
+
+  /* ═══════════════════════════════════════
+     NEWS / UPDATES
+     ═══════════════════════════════════════ */
+  .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+  .news-card {
+    padding: 22px; background: var(--dgrey); border: 2px solid #333;
+    transition: border-color .2s;
+  }
+  .news-card:hover { border-color: var(--yellow); }
+  .news-date { font-size: .38rem; color: var(--text-dim); margin-bottom: 8px; letter-spacing: .1em; }
+  .news-title { font-size: .58rem; color: var(--white); margin-bottom: 10px; }
+  .news-body { font-family: 'VT323', monospace; font-size: 1.2rem; color: var(--text-dim); line-height: 1.6; }
+  .news-tag {
+    display: inline-block; font-size: .32rem; padding: 3px 8px;
+    background: var(--yellow); color: var(--black); margin-top: 10px;
+    letter-spacing: .06em;
+  }
+
+  /* ═══════════════════════════════════════
+     CTA
+     ═══════════════════════════════════════ */
+  #cta { position:relative; z-index:1; text-align:center; padding:90px 40px; }
+  .cta-soul-big { font-size:2.8rem; display:block; margin-bottom:28px; animation:float 2s ease-in-out infinite; filter:drop-shadow(0 0 14px var(--soul-red)); }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  .cta-title { font-size:clamp(.9rem,3vw,1.8rem); color:var(--white); margin-bottom:20px; line-height:1.6; }
+  .cta-quote { font-size:.52rem; color:var(--text-dim); margin-bottom:36px; line-height:2.3; }
+  .cta-quote em { color:var(--yellow); font-style:normal; }
+
+  /* ═══════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════ */
+  footer {
+    position:relative; z-index:1; border-top:4px solid var(--white);
+    text-align:center; padding:28px 20px;
+    font-size:.45rem; color:var(--text-dim); letter-spacing:.15em;
+  }
+  footer .yl { color:var(--yellow); }
+  footer .rd { color:var(--soul-red); }
+
+  .ut-hr { position:relative; z-index:1; height:4px; background:var(--white); }
+
+  /* REVEAL */
+  .reveal { opacity:0; transform:translateY(22px); transition:opacity .6s, transform .6s; }
+  .reveal.visible { opacity:1; transform:none; }
+
+  @keyframes fadein { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none} }
+
+  /* ADMIN MODAL — revamped */
+  .modal-overlay {
+    display:none; position:fixed; inset:0; z-index:2000;
+    background:rgba(0,0,0,.97);
+    align-items:center; justify-content:center;
+    opacity:0; transition:opacity .35s ease;
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  }
+  .modal-overlay.open { display:flex; opacity:1; }
+
+  /* Animated background grid */
+  .modal-overlay::before {
+    content:''; position:absolute; inset:0; z-index:-1;
+    background-image:
+      linear-gradient(rgba(255,255,0,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,0,.03) 1px, transparent 1px);
+    background-size:32px 32px;
+    animation:gridShift 20s linear infinite;
+  }
+  @keyframes gridShift { from{transform:translate(0,0)} to{transform:translate(32px,32px)} }
+
+  .modal {
+    width:94%; max-width:800px; max-height:92vh; overflow-y:auto;
+    background:var(--black);
+    border:3px solid var(--yellow);
+    box-shadow:
+      0 0 60px rgba(255,255,0,.12),
+      0 0 120px rgba(255,255,0,.04),
+      12px 12px 0 rgba(255,255,255,.06);
+    padding:0;
+    scrollbar-width:thin; scrollbar-color:#333 transparent;
+    animation:modalSlideIn .4s cubic-bezier(.22,.68,0,1.1);
+    position:relative;
+    overflow-x:hidden; overflow-y:auto;
+  }
+
+  /* Custom scrollbar for modal */
+  .modal::-webkit-scrollbar { width:8px; }
+  .modal::-webkit-scrollbar-track { background:var(--black); border-left:1px solid #111; }
+  .modal::-webkit-scrollbar-thumb {
+    background:#333; border-radius:0;
+    transition:background .15s;
+  }
+  .modal::-webkit-scrollbar-thumb:hover { background:var(--yellow); }
+  @keyframes modalSlideIn {
+    from { transform:translateY(40px) scale(.94); opacity:0; }
+    to { transform:none; opacity:1; }
+  }
+
+  /* Top glow bar */
+  .modal::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg, transparent, var(--yellow), transparent);
+    animation:glowPulse 3s ease-in-out infinite;
+  }
+  @keyframes glowPulse { 0%,100%{opacity:.5} 50%{opacity:1} }
+
+  /* Modal header */
+  .modal-header {
+    padding:28px 36px 20px;
+    border-bottom:2px solid rgba(255,255,0,.15);
+    display:flex; align-items:center; justify-content:space-between;
+    background:linear-gradient(180deg, rgba(255,255,0,.04) 0%, transparent 100%);
+    position:relative;
+  }
+  .modal-header-left { display:flex; align-items:center; gap:16px; }
+  .modal-header-icon {
+    font-size:1.8rem;
+    animation:heartbeat 1.2s ease-in-out infinite;
+    filter:drop-shadow(0 0 8px rgba(255,51,51,.5));
+  }
+  .modal-title { font-size:.9rem; color:var(--yellow); margin:0; letter-spacing:.05em; }
+  .modal-sub { font-size:.4rem; color:#555; margin:6px 0 0; letter-spacing:.15em; }
+  .modal-close {
+    font-family:'Press Start 2P',monospace; font-size:.55rem;
+    color:#444; background:rgba(255,255,255,.03); border:2px solid #222;
+    padding:10px 14px; cursor:pointer; transition:all .2s;
+  }
+  .modal-close:hover { border-color:var(--soul-red); color:var(--soul-red); background:rgba(255,51,51,.08); transform:scale(1.05); }
+
+  /* Tabs */
+  .modal-tabs {
+    display:flex; gap:0; border-bottom:2px solid #1a1a1a;
+    background:linear-gradient(180deg, var(--dgrey) 0%, #0a0a0a 100%);
+    position:relative;
+  }
+  .modal-tab {
+    flex:1; padding:16px 8px 14px; text-align:center;
+    font-family:'Press Start 2P',monospace; font-size:.42rem;
+    color:#333; background:none; border:none; cursor:pointer;
+    border-bottom:3px solid transparent;
+    transition:all .25s ease;
+    letter-spacing:.06em;
+    position:relative;
+  }
+  .modal-tab::before {
+    content:''; position:absolute; bottom:0; left:50%; width:0; height:3px;
+    background:var(--yellow);
+    transition:all .3s ease; transform:translateX(-50%);
+  }
+  .modal-tab:hover { color:#666; }
+  .modal-tab:hover::before { width:40%; }
+  .modal-tab.active { color:var(--yellow); }
+  .modal-tab.active::before { width:100%; }
+  .modal-tab-icon { display:block; font-size:.75rem; margin-bottom:6px; transition:transform .2s; }
+  .modal-tab:hover .modal-tab-icon { transform:scale(1.15); }
+
+  /* Tab content */
+  .modal-tab-content { display:none; padding:32px 36px 28px; }
+  .modal-tab-content.active { display:block; animation:tabFade .3s ease; }
+  @keyframes tabFade { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+
+  /* Staff role sections */
+  .a-role-section {
+    margin-bottom:32px; padding-bottom:20px;
+    border-bottom:1px solid #111;
+  }
+  .a-role-section:last-of-type { border-bottom:none; margin-bottom:0; }
+
+  .a-role-title {
+    font-size:.55rem; margin-bottom:16px; padding-bottom:12px;
+    display:flex; align-items:center; gap:10px;
+    position:relative;
+  }
+  .a-role-title.owner    { color:var(--soul-yellow); }
+  .a-role-title.admin    { color:var(--soul-orange); }
+  .a-role-title.mod      { color:var(--soul-cyan); }
+  .a-role-title.creative { color:var(--soul-purple); }
+  .a-role-title.stats    { color:var(--soul-green); }
+
+  .a-role-title::after {
+    content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+  }
+  .a-role-title.owner::after    { background:linear-gradient(90deg, rgba(255,255,0,.3), transparent); }
+  .a-role-title.admin::after    { background:linear-gradient(90deg, rgba(255,136,0,.3), transparent); }
+  .a-role-title.mod::after      { background:linear-gradient(90deg, rgba(51,204,255,.3), transparent); }
+  .a-role-title.creative::after { background:linear-gradient(90deg, rgba(204,51,255,.3), transparent); }
+  .a-role-title.stats::after    { background:linear-gradient(90deg, rgba(51,255,102,.3), transparent); }
+
+  .adm-members-list { display:flex; flex-direction:column; gap:10px; margin-bottom:10px; }
+
+  /* Member card */
+  .adm-member-card {
+    background:linear-gradient(135deg, #0a0a0a 0%, #060606 100%);
+    border:2px solid #1a1a1a;
+    transition:all .25s ease;
+    overflow:hidden;
+    position:relative;
+  }
+  .adm-member-card::before {
+    content:''; position:absolute; top:0; left:0; width:3px; height:100%;
+    background:var(--yellow); opacity:0; transition:opacity .2s;
+  }
+  .adm-member-card:hover { border-color:#333; transform:translateX(4px); }
+  .adm-member-card:hover::before { opacity:.5; }
+  .adm-member-card:focus-within { border-color:var(--yellow); }
+  .adm-member-card:focus-within::before { opacity:1; }
+
+  .adm-member-top {
+    display:flex; gap:8px; align-items:center; padding:12px 14px;
+  }
+  .adm-member-top input {
+    flex:1; background:var(--dgrey); border:2px solid #222; color:var(--white);
+    font-family:'Press Start 2P',monospace; font-size:.5rem;
+    padding:10px 12px; outline:none; transition:border-color .15s;
+    min-width:0;
+  }
+  .adm-member-top input:focus { border-color:var(--yellow); }
+  .adm-member-top input::placeholder { color:#2a2a2a; }
+
+  .btn-socials {
+    font-family:'Press Start 2P',monospace; font-size:.35rem;
+    background:none; border:2px solid #222; color:#444;
+    padding:10px 10px; cursor:pointer; white-space:nowrap; transition:all .2s; flex-shrink:0;
+  }
+  .btn-socials:hover { border-color:var(--soul-cyan); color:var(--soul-cyan); }
+  .btn-socials.open { border-color:var(--soul-cyan); color:var(--soul-cyan); background:rgba(51,204,255,.05); }
+
+  .btn-del {
+    font-family:'Press Start 2P',monospace; font-size:.42rem;
+    background:none; color:#333; border:2px solid #222;
+    padding:10px 12px; cursor:pointer; transition:all .2s; flex-shrink:0;
+  }
+  .btn-del:hover { border-color:var(--soul-red); color:var(--soul-red); background:rgba(255,51,51,.05); }
+
+  /* Socials expandable panel */
+  .adm-socials-panel {
+    display:none; border-top:2px solid #111;
+    background:linear-gradient(180deg, #080808 0%, #040404 100%);
+  }
+  .adm-socials-panel.open { display:block; animation:tabFade .25s ease; }
+  .adm-socials-inner { padding:16px; }
+
+  /* Social editor grid */
+  .social-editor-grid {
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(320px,1fr));
+    gap:10px;
+  }
+
+  .social-card {
+    display:flex; align-items:center; gap:10px;
+    background:var(--dgrey); border:2px solid #1a1a1a;
+    padding:10px 12px; transition:all .2s;
+    position:relative; overflow:hidden;
+  }
+  .social-card::after {
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(135deg, transparent 60%, rgba(255,255,255,.02) 100%);
+    pointer-events:none;
+  }
+  .social-card:hover { border-color:#333; transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,.3); }
+  .social-card:focus-within { border-color:var(--yellow); box-shadow:0 0 12px rgba(255,255,0,.08); }
+
+  .social-card-badge {
+    font-family:'Press Start 2P',monospace; font-size:.4rem;
+    padding:8px 8px; min-width:30px; text-align:center;
+    flex-shrink:0; font-weight:700; border:2px solid;
+    transition:transform .15s;
+  }
+  .social-card:hover .social-card-badge { transform:scale(1.1); }
+
+  .social-card-fields { flex:1; min-width:0; }
+  .social-card-input {
+    width:100%; background:var(--black); border:1px solid #222; color:var(--white);
+    font-family:'Press Start 2P',monospace; font-size:.38rem;
+    padding:7px 9px; outline:none; transition:border-color .15s;
+    box-sizing:border-box;
+  }
+  .social-card-input:focus { border-color:var(--yellow); }
+  .social-card-input::placeholder { color:#1a1a1a; }
+
+  .social-card-url {
+    width:100%; background:var(--black); border:1px solid #1a1a1a; color:#444;
+    font-family:'VT323',monospace; font-size:.85rem;
+    padding:5px 9px; outline:none; margin-top:5px;
+    box-sizing:border-box; transition:border-color .15s;
+  }
+  .social-card-url:focus { border-color:var(--soul-cyan); color:var(--text-dim); }
+  .social-card-url::placeholder { color:#111; }
+
+  /* Avatar row */
+  .adm-avatar-row {
+    display:flex; gap:10px; align-items:center; margin-bottom:14px;
+  }
+  .adm-avatar-row input {
+    flex:1; background:var(--dgrey); border:2px solid #222; color:var(--white);
+    font-family:'Press Start 2P',monospace; font-size:.42rem;
+    padding:9px 12px; outline:none; box-sizing:border-box;
+    transition:border-color .15s;
+  }
+  .adm-avatar-row input:focus { border-color:var(--yellow); }
+  .adm-avatar-row input::placeholder { color:#2a2a2a; }
+  .adm-avatar-preview {
+    width:48px; height:48px; flex-shrink:0;
+    border:2px solid #222; background:var(--grey);
+    object-fit:cover; image-rendering:pixelated;
+    transition:border-color .15s, transform .15s;
+  }
+  .adm-avatar-preview:hover { border-color:var(--yellow); transform:scale(1.1); }
+
+  /* Stats section */
+  .stats-row {
+    display:flex; gap:14px; flex-wrap:wrap; margin-bottom:10px;
+  }
+  .stat-card {
+    flex:1; min-width:150px; padding:24px 16px;
+    background:var(--dgrey); border:2px solid #1a1a1a;
+    text-align:center; transition:all .25s ease;
+    position:relative; overflow:hidden;
+  }
+  .stat-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:var(--soul-green); transform:scaleX(0);
+    transition:transform .3s ease;
+  }
+  .stat-card:hover { border-color:var(--soul-green); transform:translateY(-4px); box-shadow:0 8px 20px rgba(0,0,0,.3); }
+  .stat-card:hover::before { transform:scaleX(1); }
+  .stat-card-icon { font-size:1.6rem; display:block; margin-bottom:10px; }
+  .stat-card-label { font-size:.38rem; color:var(--text-dim); margin-bottom:12px; display:block; letter-spacing:.08em; }
+  .stat-card-input {
+    width:100%; background:var(--black); border:2px solid #222; color:var(--yellow);
+    font-family:'Press Start 2P',monospace; font-size:.75rem; text-align:center;
+    padding:12px; outline:none; box-sizing:border-box; transition:border-color .15s;
+  }
+  .stat-card-input:focus { border-color:var(--soul-green); }
+  .stat-card-input::placeholder { color:#222; }
+
+  /* Footer */
+  .admin-footer {
+    display:flex; gap:12px; align-items:center;
+    padding:24px 36px; border-top:2px solid #1a1a1a;
+    background:linear-gradient(180deg, var(--dgrey) 0%, #0a0a0a 100%);
+    flex-wrap:wrap;
+  }
+  .btn-ut {
+    font-family:'Press Start 2P',monospace; font-size:.52rem;
+    background:var(--black); color:var(--yellow); border:3px solid var(--yellow);
+    padding:12px 28px; cursor:pointer; transition:all .2s; letter-spacing:.08em;
+    position:relative; overflow:hidden;
+  }
+  .btn-ut::before {
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(90deg, transparent, rgba(255,255,0,.1), transparent);
+    transform:translateX(-100%); transition:transform .5s;
+  }
+  .btn-ut:hover::before { transform:translateX(100%); }
+  .btn-ut:hover { background:var(--yellow); color:var(--black); box-shadow:0 0 20px rgba(255,255,0,.25); }
+  .btn-danger {
+    font-family:'Press Start 2P',monospace; font-size:.42rem;
+    background:var(--black); color:var(--soul-red); border:2px solid var(--soul-red);
+    padding:10px 18px; cursor:pointer; transition:all .2s;
+  }
+  .btn-danger:hover { background:var(--soul-red); color:var(--black); box-shadow:0 0 12px rgba(255,51,51,.2); }
+  .save-ok { font-size:.45rem; color:var(--soul-green); opacity:0; transition:opacity .4s; }
+  .save-ok.show { opacity:1; }
+
+  /* Login form */
+  .login-form-wrap { padding:40px 36px; }
+  .login-form-icon { text-align:center; font-size:3rem; margin-bottom:24px; animation:heartbeat 1.5s ease-in-out infinite; }
+  .field-label { font-size:.48rem; color:var(--text-dim); display:block; margin-bottom:8px; letter-spacing:.1em; }
+  .field-input {
+    width:100%; background:var(--dgrey); border:2px solid #222;
+    color:var(--white); font-family:'Press Start 2P',monospace; font-size:.6rem;
+    padding:12px 14px; outline:none; transition:border-color .15s; margin-bottom:14px;
+    box-sizing:border-box;
+  }
+  .field-input:focus { border-color:var(--yellow); }
+  .field-input::placeholder { color:#2a2a2a; }
+  .login-error { font-size:.5rem; color:var(--soul-red); margin-bottom:10px; display:none; }
+  .login-error.show { display:block; }
+
+  /* Admin panel base */
+  .admin-panel { display:none; }
+  .admin-panel.show { display:block; }
+
+  /* Button add */
+  .btn-add {
+    font-family:'Press Start 2P',monospace; font-size:.42rem;
+    background:none; border:2px dashed #222; color:#333;
+    padding:12px 16px; cursor:pointer; transition:all .2s; width:100%;
+    text-align:center; margin-top:6px;
+  }
+  .btn-add:hover { border-color:var(--yellow); color:var(--yellow); background:rgba(255,255,0,.02); }
+
+  .btn-ut-loading { opacity:.6; pointer-events:none; }
+
+  /* ── CONTENT EDITOR (rules, roadmap, achievements, news) ── */
+  .content-editor { margin-bottom: 28px; }
+  .content-editor-title {
+    font-size:.52rem; color:var(--yellow); margin-bottom:14px; padding-bottom:10px;
+    border-bottom:2px solid rgba(255,255,0,.15); display:flex; align-items:center; gap:10px;
+  }
+  .content-editor-title .ce-icon { font-size:.8rem; }
+
+  /* Rule editor card */
+  .rule-editor-card {
+    background:var(--dgrey); border:2px solid #222; padding:16px;
+    margin-bottom:10px; position:relative;
+    transition:border-color .2s;
+  }
+  .rule-editor-card:hover { border-color:#333; }
+  .rule-editor-card:focus-within { border-color:var(--yellow); }
+  .rule-editor-num {
+    position:absolute; top:10px; right:12px;
+    font-size:.35rem; color:#333; font-family:'Press Start 2P',monospace;
+  }
+  .rule-editor-input {
+    width:100%; background:var(--black); border:1px solid #333; color:var(--yellow);
+    font-family:'Press Start 2P',monospace; font-size:.48rem;
+    padding:8px 10px; outline:none; margin-bottom:8px; box-sizing:border-box;
+    transition:border-color .15s;
+  }
+  .rule-editor-input:focus { border-color:var(--yellow); }
+  .rule-editor-textarea {
+    width:100%; background:var(--black); border:1px solid #333; color:var(--white);
+    font-family:'VT323',monospace; font-size:1.15rem; line-height:1.5;
+    padding:10px; outline:none; min-height:60px; resize:vertical;
+    box-sizing:border-box; transition:border-color .15s;
+  }
+  .rule-editor-textarea:focus { border-color:var(--yellow); }
+  .rule-editor-textarea::placeholder { color:#2a2a2a; }
+  .rule-editor-input::placeholder { color:#2a2a2a; }
+
+  /* Timeline editor card */
+  .tl-editor-card {
+    background:var(--dgrey); border-left:4px solid #444; padding:14px 16px;
+    margin-bottom:10px; display:flex; gap:12px; align-items:flex-start;
+    transition:border-color .2s;
+  }
+  .tl-editor-card:hover { border-left-color:var(--yellow); }
+  .tl-editor-card.done { border-left-color:var(--soul-green); }
+  .tl-editor-card.wip { border-left-color:var(--yellow); }
+  .tl-editor-card.future { border-left-color:#555; }
+  .tl-editor-fields { flex:1; min-width:0; }
+  .tl-editor-input {
+    width:100%; background:var(--black); border:1px solid #333; color:var(--white);
+    font-family:'Press Start 2P',monospace; font-size:.42rem;
+    padding:6px 8px; outline:none; margin-bottom:6px; box-sizing:border-box;
+    transition:border-color .15s;
+  }
+  .tl-editor-input:focus { border-color:var(--yellow); }
+  .tl-editor-input::placeholder { color:#2a2a2a; }
+  .tl-editor-textarea {
+    width:100%; background:var(--black); border:1px solid #333; color:var(--text-dim);
+    font-family:'VT323',monospace; font-size:1.05rem; line-height:1.5;
+    padding:8px; outline:none; min-height:45px; resize:vertical;
+    box-sizing:border-box; transition:border-color .15s;
+  }
+  .tl-editor-textarea:focus { border-color:var(--yellow); }
+  .tl-editor-textarea::placeholder { color:#222; }
+  .tl-editor-status {
+    font-size:.38rem; padding:4px 10px; border:2px solid;
+    flex-shrink:0; cursor:pointer; transition:all .15s;
+    font-family:'Press Start 2P',monospace; background:none;
+  }
+  .tl-editor-status.done { color:var(--soul-green); border-color:var(--soul-green); }
+  .tl-editor-status.wip { color:var(--yellow); border-color:var(--yellow); }
+  .tl-editor-status.future { color:#555; border-color:#555; }
+  .tl-editor-del {
+    font-family:'Press Start 2P',monospace; font-size:.38rem;
+    background:none; border:2px solid #222; color:#333;
+    padding:6px 8px; cursor:pointer; transition:all .15s; flex-shrink:0;
+  }
+  .tl-editor-del:hover { border-color:var(--soul-red); color:var(--soul-red); }
+
+  /* Achievement editor card */
+  .ach-editor-card {
+    display:flex; gap:10px; align-items:center; padding:12px;
+    background:var(--dgrey); border:2px solid #222; margin-bottom:8px;
+    transition:border-color .15s;
+  }
+  .ach-editor-card:hover { border-color:#333; }
+  .ach-editor-card.locked { opacity:.4; }
+  .ach-editor-icon {
+    font-size:1.2rem; flex-shrink:0; width:36px; text-align:center;
+  }
+  .ach-editor-fields { flex:1; min-width:0; }
+  .ach-editor-input {
+    width:100%; background:var(--black); border:1px solid #333; color:var(--white);
+    font-family:'Press Start 2P',monospace; font-size:.4rem;
+    padding:5px 7px; outline:none; margin-bottom:4px; box-sizing:border-box;
+    transition:border-color .15s;
+  }
+  .ach-editor-input:focus { border-color:var(--yellow); }
+  .ach-editor-input::placeholder { color:#2a2a2a; }
+  .ach-editor-toggle {
+    font-family:'Press Start 2P',monospace; font-size:.35rem;
+    background:none; border:2px solid #333; color:#444;
+    padding:6px 8px; cursor:pointer; transition:all .15s; flex-shrink:0;
+  }
+  .ach-editor-toggle:hover { border-color:var(--soul-green); color:var(--soul-green); }
+
+  /* News editor card */
+  .news-editor-card {
+    background:var(--dgrey); border:2px solid #222; padding:16px;
+    margin-bottom:10px; position:relative;
+    transition:border-color .15s;
+  }
+  .news-editor-card:hover { border-color:#333; }
+  .news-editor-date-input {
+    width:120px; background:var(--black); border:1px solid #333; color:var(--text-dim);
+    font-family:'Press Start 2P',monospace; font-size:.38rem;
+    padding:5px 7px; outline:none; margin-bottom:8px; box-sizing:border-box;
+    transition:border-color .15s;
+  }
+  .news-editor-date-input:focus { border-color:var(--yellow); }
+  .news-editor-tag-input {
+    width:80px; background:var(--yellow); color:var(--black);
+    font-family:'Press Start 2P',monospace; font-size:.35rem;
+    padding:4px 7px; border:none; outline:none; margin-bottom:8px; margin-left:8px;
+    box-sizing:border-box;
+  }
+  .news-editor-title-input {
+    width:100%; background:var(--black); border:1px solid #333; color:var(--white);
+    font-family:'Press Start 2P',monospace; font-size:.48rem;
+    padding:7px 9px; outline:none; margin-bottom:8px; box-sizing:border-box;
+    transition:border-color .15s;
+  }
+  .news-editor-title-input:focus { border-color:var(--yellow); }
+  .news-editor-title-input::placeholder { color:#2a2a2a; }
+  .news-editor-body-textarea {
+    width:100%; background:var(--black); border:1px solid #333; color:var(--text-dim);
+    font-family:'VT323',monospace; font-size:1.1rem; line-height:1.5;
+    padding:10px; outline:none; min-height:60px; resize:vertical;
+    box-sizing:border-box; transition:border-color .15s;
+  }
+  .news-editor-body-textarea:focus { border-color:var(--yellow); }
+  .news-editor-body-textarea::placeholder { color:#222; }
+  .news-editor-del {
+    position:absolute; top:10px; right:12px;
+    font-family:'Press Start 2P',monospace; font-size:.38rem;
+    background:none; border:2px solid #222; color:#333;
+    padding:5px 8px; cursor:pointer; transition:all .15s;
+  }
+  .news-editor-del:hover { border-color:var(--soul-red); color:var(--soul-red); }
+
+  /* CTA / Hero editor */
+  .hero-editor-section { margin-bottom:20px; }
+  .hero-editor-label {
+    font-size:.42rem; color:var(--text-dim); margin-bottom:6px; display:block;
+    letter-spacing:.08em;
+  }
+  .hero-editor-input {
+    width:100%; background:var(--black); border:2px solid #222; color:var(--white);
+    font-family:'Press Start 2P',monospace; font-size:.48rem;
+    padding:10px 12px; outline:none; box-sizing:border-box;
+    transition:border-color .15s;
+  }
+  .hero-editor-input:focus { border-color:var(--yellow); }
+  .hero-editor-input::placeholder { color:#2a2a2a; }
+  .hero-editor-textarea {
+    width:100%; background:var(--black); border:2px solid #222; color:var(--text-dim);
+    font-family:'VT323',monospace; font-size:1.2rem; line-height:1.5;
+    padding:12px; outline:none; min-height:80px; resize:vertical;
+    box-sizing:border-box; transition:border-color .15s;
+  }
+  .hero-editor-textarea:focus { border-color:var(--yellow); }
+  .hero-editor-textarea::placeholder { color:#222; }
+
+  .btn-add-content {
+    font-family:'Press Start 2P',monospace; font-size:.42rem;
+    background:none; border:2px dashed #222; color:#333;
+    padding:12px 16px; cursor:pointer; transition:all .2s; width:100%;
+    text-align:center; margin-top:6px;
+  }
+  .btn-add-content:hover { border-color:var(--yellow); color:var(--yellow); background:rgba(255,255,0,.02); }
+
+  @media(max-width:680px) {
+    .modal { width:98%; max-height:95vh; }
+    .modal-header { padding:20px 18px 16px; }
+    .modal-tab { font-size:.35rem; padding:12px 4px; }
+    .modal-tab-icon { font-size:.6rem; }
+    .modal-tab-content { padding:24px 18px 18px; }
+    .admin-footer { padding:18px; }
+    .social-editor-grid { grid-template-columns:1fr; }
+    .stats-row { flex-direction:column; }
+  }
+
+  /* ── HOVER CARD ── */
+  #hover-card {
+    position:fixed; z-index:9000; width:272px;
+    background:var(--black); border:4px solid var(--white);
+    box-shadow:4px 4px 0 var(--white);
+    opacity:0; pointer-events:none;
+    transition:opacity .12s;
+    font-family:'Press Start 2P',monospace;
+  }
+  #hover-card.hc-visible { opacity:1; pointer-events:auto; }
+  .hc-banner {
+    background:var(--dgrey); padding:12px;
+    display:flex; align-items:center; gap:10px;
+    border-bottom:3px solid var(--white);
+  }
+  .hc-avatar {
+    width:54px; height:54px; flex-shrink:0;
+    border:3px solid var(--white); object-fit:cover;
+    background:var(--grey); image-rendering:pixelated;
+  }
+  .hc-avatar-ph {
+    width:54px; height:54px; flex-shrink:0;
+    border:3px solid var(--white); background:var(--grey);
+    display:flex; align-items:center; justify-content:center; font-size:1.3rem;
+  }
+  .hc-name { font-size:.5rem; color:var(--yellow); margin-bottom:4px; }
+  .hc-role-lbl { font-size:.38rem; color:var(--text-dim); letter-spacing:.08em; }
+  .hc-socials { padding:8px 10px; display:flex; flex-direction:column; gap:5px; }
+  .hc-row {
+    display:flex; align-items:center; gap:8px;
+    text-decoration:none; padding:6px 8px;
+    background:var(--dgrey); border:2px solid #2a2a2a;
+    transition:border-color .1s, background .1s;
+  }
+  .hc-row:hover { border-color:var(--yellow); background:#1c1c00; }
+  .hc-badge {
+    font-size:.38rem; padding:3px 5px; flex-shrink:0;
+    min-width:24px; text-align:center; letter-spacing:.04em;
+    font-family:'Press Start 2P',monospace; font-weight:700;
+  }
+  .hc-user { font-size:.46rem; color:var(--white); flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .hc-arrow { font-size:.4rem; color:var(--text-dim); flex-shrink:0; }
+  .hc-empty { padding:12px; font-size:.42rem; color:var(--text-dim); text-align:center; font-style:italic; }
+
+  /* ── ADMIN SOCIAL EDITOR ── */
+  .adm-member-block { display:flex; flex-direction:column; gap:0; }
+  .adm-member-row { display:flex; gap:7px; align-items:center; }
+  .adm-member-row input {
+    flex:1; background:var(--dgrey); border:2px solid #444; color:var(--white);
+    font-family:'Press Start 2P',monospace; font-size:.52rem;
+    padding:8px 11px; outline:none; transition:border-color .15s;
+  }
+  .adm-member-row input:focus { border-color:var(--yellow); }
+  .btn-socials {
+    font-family:'Press Start 2P',monospace; font-size:.38rem;
+    background:none; border:2px solid #444; color:#666;
+    padding:7px 8px; cursor:pointer; white-space:nowrap; transition:all .15s; flex-shrink:0;
+  }
+  .btn-socials:hover, .btn-socials.open { border-color:var(--soul-cyan); color:var(--soul-cyan); }
+  .adm-socials-panel {
+    display:none; background:#0a0a0a; border:2px solid #222;
+    border-top:none; padding:10px; margin-bottom:4px;
+  }
+  .adm-socials-panel.open { display:block; }
+  .adm-avatar-field { margin-bottom:8px; }
+  .adm-net-row { display:flex; align-items:center; gap:6px; margin-bottom:6px; }
+  .adm-net-badge {
+    font-family:'Press Start 2P',monospace; font-size:.36rem;
+    padding:3px 5px; min-width:24px; text-align:center;
+    flex-shrink:0; font-weight:700;
+  }
+  .adm-net-row input {
+    flex:1; background:var(--dgrey); border:1px solid #333; color:var(--white);
+    font-family:'Press Start 2P',monospace; font-size:.44rem;
+    padding:6px 8px; outline:none; min-width:0; transition:border-color .15s;
+  }
+  .adm-net-row input:focus { border-color:var(--yellow); }
+  .adm-field-lbl { font-size:.38rem; color:var(--text-dim); margin-bottom:4px; display:block; letter-spacing:.08em; }
+
+  @media(max-width:680px) {
+    nav { padding:0 16px; }
+    .nav-links { display:none; }
+    .nav-actions { gap: 4px; }
+    .ut-section { padding:56px 18px; }
+    .battle-menu { grid-template-columns:1fr; }
+    #cta { padding:70px 18px; }
+    #hover-card { display:none; }
+    #nav-dots { display:none; }
+    #discord-stats-bar { flex-wrap: wrap; gap: 8px; padding: 6px 12px; }
+    #gal-prev, #gal-next { display: none; } /* gallery removed */
+  }
+</style>
+</head>
+<body>
+
+<div class="stars-layer" aria-hidden="true"><span></span></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#inicio" class="nav-logo">
+    <span class="nav-heart">❤</span> BROKEN HOPES
+  </a>
+  <ul class="nav-links">
+    <li><a href="#inicio">INICIO</a></li>
+    <li><a href="#reglas">REGLAS</a></li>
+    <li><a href="#staff">STAFF</a></li>
+    <li><a href="#roadmap">ROADMAP</a></li>
+    <li><a href="#achievements">LOGROS</a></li>
+    <li><a href="#news">NOTICIAS</a></li>
+    <li><a href="#cta">UNIRSE</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="nav-btn" id="btnSfxToggle" onclick="toggleSfxBtn()" title="Toggle SFX">
+      <span class="nav-btn-sfx" id="sfxIcon">🔇</span>
+    </button>
+    <button class="nav-btn" id="btnMusicToggle" onclick="toggleMusicBtn()" title="Toggle Music">
+      <span class="nav-btn-sfx" id="musicIcon">🎵</span>
+    </button>
+    <!-- Admin access is HIDDEN — use combo: Shift+Alt+A -->
+  </div>
+</nav>
+
+<!-- LIVE DISCORD STATS BAR -->
+<div id="discord-stats-bar">
+  <div class="ds-item">
+    <span class="ds-icon">👥</span>
+    <span class="ds-label">MIEMBROS</span>
+    <span class="ds-val ds-total" id="dsTotal">—</span>
+  </div>
+  <div class="ds-item">
+    <span class="ds-online-dot"></span>
+    <span class="ds-label">ONLINE</span>
+    <span class="ds-val ds-online" id="dsOnline">—</span>
+  </div>
+  <div class="ds-item">
+    <span class="ds-icon">🚀</span>
+    <span class="ds-label">BOOSTS</span>
+    <span class="ds-val ds-boosts" id="dsBoosts">—</span>
+  </div>
+</div>
+
+<!-- SECTION NAVIGATION DOTS -->
+<div id="nav-dots">
+  <div class="nav-dot active" onclick="scrollToSection('inicio')">
+    <span class="nav-dot-label">INICIO</span>
+  </div>
+  <div class="nav-dot" onclick="scrollToSection('reglas')">
+    <span class="nav-dot-label">REGLAS</span>
+  </div>
+  <div class="nav-dot" onclick="scrollToSection('staff')">
+    <span class="nav-dot-label">STAFF</span>
+  </div>
+  <div class="nav-dot" onclick="scrollToSection('roadmap')">
+    <span class="nav-dot-label">ROADMAP</span>
+  </div>
+  <div class="nav-dot" onclick="scrollToSection('achievements')">
+    <span class="nav-dot-label">LOGROS</span>
+  </div>
+  <div class="nav-dot" onclick="scrollToSection('news')">
+    <span class="nav-dot-label">NOTICIAS</span>
+  </div>
+  <div class="nav-dot" onclick="scrollToSection('cta')">
+    <span class="nav-dot-label">UNIRSE</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section id="inicio">
+  <p class="hero-chapter">— CAPÍTULO I : EL SUBSUELO —</p>
+
+  <h1 class="hero-title">
+    <span class="t1">BROKEN</span>
+    <span class="t2">HOPES</span>
+  </h1>
+
+  <div class="dialogue-box px-box" id="typewriter-box">
+    <div class="dialogue-inner">
+      <img class="dialogue-sprite" src="assets/images/gallery/flowey-sheet.png" alt="Flowey" style="width:200px;height:200px;flex-shrink:0;object-fit:contain;image-rendering:pixelated;">
+      <div class="dialogue-right">
+        <div class="dialogue-speaker">FLOWEY</div>
+        <p class="dialogue-text" id="typewriter"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="battle-menu">
+    <a href="https://discord.gg/VGKZhwThpw" target="_blank" class="battle-btn primary" onclick="triggerJoinEffect()">
+      <span class="battle-btn-icon">❤</span> UNIRSE
+    </a>
+    <a href="#reglas" class="battle-btn">
+      <span class="battle-btn-icon">📜</span> REGLAS
+    </a>
+    <a href="#staff" class="battle-btn">
+      <span class="battle-btn-icon">👥</span> STAFF
+    </a>
+    <a href="#cta" class="battle-btn">
+      <span class="battle-btn-icon">✨</span> NOSOTROS
+    </a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hp-row">
+      <span class="hp-label">JUEGO</span>
+      <div class="hp-bar-wrap"><div class="hp-bar green" style="width:65%"></div></div>
+      <span class="hp-val" style="font-size:.4rem">WIP</span>
+    </div>
+    <div class="hp-row">
+      <span class="hp-label">ACTIVIDAD</span>
+      <div class="hp-bar-wrap"><div class="hp-bar cyan" style="width:88%"></div></div>
+      <span class="hp-val" style="font-size:.4rem">24/7</span>
+    </div>
+    <div class="hp-row">
+      <span class="hp-label">DETERMINACIÓN</span>
+      <div class="hp-bar-wrap"><div class="hp-bar yellow" style="width:100%"></div></div>
+      <span class="hp-val" style="font-size:.4rem">MAX</span>
+    </div>
+  </div>
+</section>
+
+<div class="ut-hr"></div>
+
+<!-- REGLAS -->
+<div id="reglas" class="ut-section">
+  <div class="chapter-header reveal">
+    <span class="chapter-num">// CAP. II</span>
+    <div class="chapter-line"></div>
+    <span class="chapter-title">LAS LEYES DEL SUBSUELO</span>
+    <div class="chapter-line"></div>
+  </div>
+  <div class="rules-grid">
+    <div class="rule-card reveal" data-n="1">
+      <div class="rule-name">RESPETO ANTE TODO</div>
+      <p class="rule-text"><span class="rule-prefix">* </span>En este mundo, se trata a todos con respeto. El acoso, los insultos y la discriminación están prohibidos. El camino pacifista siempre existe.</p>
+    </div>
+    <div class="rule-card reveal" data-n="2">
+      <div class="rule-name">SIN SPAM</div>
+      <p class="rule-text"><span class="rule-prefix">* </span>Los mensajes repetitivos, cadenas de texto y el flood rompen el flujo. Mantén las conversaciones limpias y con propósito.</p>
+    </div>
+    <div class="rule-card reveal" data-n="3">
+      <div class="rule-name">CANALES CORRECTOS</div>
+      <p class="rule-text"><span class="rule-prefix">* </span>Cada canal tiene su función. Las ideas de Roblox, el arte y el chat general tienen su propio espacio. Respétalos.</p>
+    </div>
+    <div class="rule-card reveal" data-n="4">
+      <div class="rule-name">CONTENIDO APROPIADO</div>
+      <p class="rule-text"><span class="rule-prefix">* </span>El contenido NSFW o perturbador está terminantemente prohibido. Esta comunidad es abierta a todos los públicos.</p>
+    </div>
+    <div class="rule-card reveal" data-n="5">
+      <div class="rule-name">SIN AUTOPROMOCIÓN</div>
+      <p class="rule-text"><span class="rule-prefix">* </span>Prohibido publicitar otros servidores o proyectos sin autorización del staff. Usa el canal habilitado para ello.</p>
+    </div>
+    <div class="rule-card reveal" data-n="6">
+      <div class="rule-name">APORTA Y CRECE</div>
+      <p class="rule-text"><span class="rule-prefix">* </span>Tu voz importa. Comparte ideas, da feedback del juego y forma parte activa de esta historia. Todos escriben el final.</p>
+    </div>
+  </div>
+</div>
+
+<div class="ut-hr"></div>
+
+<!-- STAFF -->
+<div id="staff" class="ut-section">
+  <div class="chapter-header reveal">
+    <span class="chapter-num">// CAP. III</span>
+    <div class="chapter-line"></div>
+    <span class="chapter-title">LOS GUARDIANES</span>
+    <div class="chapter-line"></div>
+  </div>
+  <div class="roles-wrap" id="staff-display"></div>
+</div>
+
+<div class="ut-hr"></div>
+
+<!-- ROADMAP / TIMELINE -->
+<div id="roadmap" class="ut-section">
+  <div class="chapter-header reveal">
+    <span class="chapter-num">// CAP. IV</span>
+    <div class="chapter-line"></div>
+    <span class="chapter-title">EL CAMINO POR RECORRER</span>
+    <div class="chapter-line"></div>
+  </div>
+  <div class="timeline">
+    <div class="tl-item done reveal">
+      <div class="tl-date">2024 — COMPLETADO</div>
+      <div class="tl-title">Creación del Servidor</div>
+      <div class="tl-desc">BROKEN HOPES nació en el subsuelo. Los primeros guardianes fueron elegidos.</div>
+      <span class="tl-badge done">✓ COMPLETADO</span>
+    </div>
+    <div class="tl-item done reveal">
+      <div class="tl-date">2025 — COMPLETADO</div>
+      <div class="tl-title">Comunidad Activa</div>
+      <div class="tl-desc">La comunidad creció con miembros activos de Roblox, arte y creatividad.</div>
+      <span class="tl-badge done">✓ COMPLETADO</span>
+    </div>
+    <div class="tl-item wip reveal">
+      <div class="tl-date">2025 — EN PROGRESO</div>
+      <div class="tl-title">Juego de Roblox</div>
+      <div class="tl-desc">Desarrollo del juego oficial de BROKEN HOPES en Roblox. Mecánicas, mapas y más.</div>
+      <span class="tl-badge wip">⟳ EN PROGRESO</span>
+    </div>
+    <div class="tl-item future reveal">
+      <div class="tl-date">PRÓXIMAMENTE</div>
+      <div class="tl-title">Eventos de Comunidad</div>
+      <div class="tl-desc">Torneos, game nights y eventos especiales con recompensas exclusivas.</div>
+      <span class="tl-badge future">○ PRÓXIMO</span>
+    </div>
+    <div class="tl-item future reveal">
+      <div class="tl-date">PRÓXIMAMENTE</div>
+      <div class="tl-title">Galería de Arte Comunitaria</div>
+      <div class="tl-desc">Espacio dedicado para que los miembros compartan su arte y creaciones.</div>
+      <span class="tl-badge future">○ PRÓXIMO</span>
+    </div>
+    <div class="tl-item future reveal">
+      <div class="tl-date">???</div>
+      <div class="tl-title">???</div>
+      <div class="tl-desc">* Algo se esconde en las sombras del subsuelo...</div>
+      <span class="tl-badge future">○ ???</span>
+    </div>
+  </div>
+</div>
+
+<div class="ut-hr"></div>
+
+<!-- ACHIEVEMENTS / BADGES -->
+<div id="achievements" class="ut-section">
+  <div class="chapter-header reveal">
+    <span class="chapter-num">// CAP. V</span>
+    <div class="chapter-line"></div>
+    <span class="chapter-title">LOGROS DEL SUBSUELO</span>
+    <div class="chapter-line"></div>
+  </div>
+  <div class="badges-grid">
+    <div class="badge-card reveal">
+      <span class="badge-icon">❤</span>
+      <div class="badge-name">DETERMINADO</div>
+      <div class="badge-desc">Únete al servidor</div>
+    </div>
+    <div class="badge-card reveal">
+      <span class="badge-icon">🎨</span>
+      <div class="badge-name">ARTISTA</div>
+      <div class="badge-desc">Comparte tu arte con la comunidad</div>
+    </div>
+    <div class="badge-card reveal">
+      <span class="badge-icon">🎮</span>
+      <div class="badge-name">GAMER</div>
+      <div class="badge-desc">Participa en sesiones de Roblox</div>
+    </div>
+    <div class="badge-card reveal">
+      <span class="badge-icon">💬</span>
+      <div class="badge-name">SOCIAL</div>
+      <div class="badge-desc">Sé activo en el chat general</div>
+    </div>
+    <div class="badge-card locked reveal">
+      <span class="badge-icon">🔒</span>
+      <div class="badge-name">???</div>
+      <div class="badge-desc">Bloqueado — sigue explorando</div>
+    </div>
+    <div class="badge-card locked reveal">
+      <span class="badge-icon">🔒</span>
+      <div class="badge-name">???</div>
+      <div class="badge-desc">Bloqueado — sigue explorando</div>
+    </div>
+    <div class="badge-card locked reveal">
+      <span class="badge-icon">🔒</span>
+      <div class="badge-name">???</div>
+      <div class="badge-desc">Bloqueado — sigue explorando</div>
+    </div>
+    <div class="badge-card locked reveal">
+      <span class="badge-icon">🔒</span>
+      <div class="badge-name">???</div>
+      <div class="badge-desc">Bloqueado — sigue explorando</div>
+    </div>
+  </div>
+</div>
+
+<div class="ut-hr"></div>
+
+<!-- NEWS / UPDATES -->
+<div id="news" class="ut-section">
+  <div class="chapter-header reveal">
+    <span class="chapter-num">// CAP. VII</span>
+    <div class="chapter-line"></div>
+    <span class="chapter-title">NOTICIAS DEL REINO</span>
+    <div class="chapter-line"></div>
+  </div>
+  <div class="news-grid">
+    <div class="news-card reveal">
+      <div class="news-date">2025.04.01</div>
+      <div class="news-title">¡La Web Oficial Está Viva!</div>
+      <div class="news-body">
+        * Después de mucho trabajo, la página oficial de BROKEN HOPES ha nacido.
+        Incluye reglas, staff, roadmap y mucho más.
+      </div>
+      <span class="news-tag">ANUNCIO</span>
+    </div>
+    <div class="news-card reveal">
+      <div class="news-date">2025.03.15</div>
+      <div class="news-title">Nuevo Juego de Roblox en Desarrollo</div>
+      <div class="news-body">
+        * El equipo creativo está trabajando en un nuevo juego.
+        Pronto habrá novedades sobre mecánicas y personajes.
+      </div>
+      <span class="news-tag">ROBLOX</span>
+    </div>
+    <div class="news-card reveal">
+      <div class="news-date">2025.02.20</div>
+      <div class="news-title">Staff Expandido</div>
+      <div class="news-body">
+        * Nuevos guardianes se han unido para proteger el subsuelo.
+        Revisa la sección de Staff para ver los cambios.
+      </div>
+      <span class="news-tag">STAFF</span>
+    </div>
+  </div>
+</div>
+
+<div class="ut-hr"></div>
+
+<!-- CTA -->
+<div id="cta">
+  <span class="cta-soul-big reveal">❤</span>
+  <h2 class="cta-title reveal">¿QUIERES UNIRTE<br>A NUESTRA HISTORIA?</h2>
+  <p class="cta-quote reveal">
+    <em>* No importa quién seas o de dónde vengas.</em><br>
+    * En BROKEN HOPES, todos tienen un lugar.<br>
+    <em>* ¿O acaso tienes miedo de DETERMINARTE?</em>
+  </p>
+  <a href="https://discord.gg/VGKZhwThpw" target="_blank" class="battle-btn primary reveal" style="display:inline-flex;max-width:320px;justify-content:center;" onclick="triggerJoinEffect()">
+    <span class="battle-btn-icon">❤</span> UNIRSE AL SERVIDOR
+  </a>
+</div>
+
+<footer>
+  <p><span class="rd">❤</span> BROKEN HOPES · 2025 · <span class="yl">discord.gg/VGKZhwThpw</span></p>
+  <p style="margin-top:12px;color:#333">*&nbsp;&nbsp;Stay determined.</p>
+</footer>
+
+<!-- ADMIN MODAL (access: Shift+Alt+A) -->
+<div class="modal-overlay" id="adminModal">
+  <div class="modal">
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <span class="modal-header-icon">❤</span>
+        <div class="modal-header-text">
+          <div class="modal-title">PANEL ADMIN</div>
+          <div class="modal-sub">// acceso restringido · broken hopes</div>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeAdmin()">✕</button>
+    </div>
+
+    <!-- Login form -->
+    <div id="loginForm">
+      <div class="login-form-wrap">
+        <div class="login-form-icon">🔒</div>
+        <label class="field-label">* Email:</label>
+        <input class="field-input" type="email" id="adminEmail" placeholder="admin@ejemplo.com" onkeydown="if(event.key==='Enter')tryLogin()">
+        <label class="field-label">* Contraseña:</label>
+        <input class="field-input" type="password" id="adminPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')tryLogin()">
+        <p class="login-error" id="loginError">* Credenciales incorrectas. Inténtalo de nuevo.</p>
+        <button class="btn-ut" id="loginBtn" onclick="tryLogin()" style="margin-top:10px;">ACCEDER</button>
+      </div>
+    </div>
+
+    <!-- Admin panel -->
+    <div class="admin-panel" id="adminPanel">
+      <!-- Tabs -->
+      <div class="modal-tabs">
+        <button class="modal-tab active" data-tab="staff" onclick="switchTab('staff')">
+          <span class="modal-tab-icon">👥</span>
+          STAFF
+        </button>
+        <button class="modal-tab" data-tab="stats" onclick="switchTab('stats')">
+          <span class="modal-tab-icon">📊</span>
+          STATS
+        </button>
+        <button class="modal-tab" data-tab="content" onclick="switchTab('content')">
+          <span class="modal-tab-icon">📝</span>
+          CONTENIDO
+        </button>
+        <button class="modal-tab" data-tab="appearance" onclick="switchTab('appearance')">
+          <span class="modal-tab-icon">🎨</span>
+          APARIENCIA
+        </button>
+      </div>
+
+      <!-- Tab: STAFF -->
+      <div class="modal-tab-content active" id="tab-staff">
+        <div class="a-role-section">
+          <div class="a-role-title owner">💛 PROPIETARIO</div>
+          <div class="adm-members-list" id="list-owner"></div>
+          <button class="btn-add" onclick="addMember('owner')">+ AÑADIR MIEMBRO</button>
+        </div>
+        <div class="a-role-section">
+          <div class="a-role-title admin">🧡 ADMINISTRADOR</div>
+          <div class="adm-members-list" id="list-admin"></div>
+          <button class="btn-add" onclick="addMember('admin')">+ AÑADIR MIEMBRO</button>
+        </div>
+        <div class="a-role-section">
+          <div class="a-role-title mod">💙 MODERADOR</div>
+          <div class="adm-members-list" id="list-mod"></div>
+          <button class="btn-add" onclick="addMember('mod')">+ AÑADIR MIEMBRO</button>
+        </div>
+        <div class="a-role-section">
+          <div class="a-role-title creative">💜 CREATIVE LEAD</div>
+          <div class="adm-members-list" id="list-creative"></div>
+          <button class="btn-add" onclick="addMember('creative')">+ AÑADIR MIEMBRO</button>
+        </div>
+      </div>
+
+      <!-- Tab: STATS -->
+      <div class="modal-tab-content" id="tab-stats">
+        <div class="a-role-section">
+          <div class="a-role-title stats">📊 ESTADÍSTICAS DEL SERVIDOR DISCORD</div>
+          <div class="stats-row">
+            <div class="stat-card">
+              <span class="stat-card-icon">👥</span>
+              <span class="stat-card-label">MIEMBROS TOTALES</span>
+              <input type="number" id="admStatTotal" min="0" placeholder="8" class="stat-card-input">
+            </div>
+            <div class="stat-card">
+              <span class="stat-card-icon">🟢</span>
+              <span class="stat-card-label">ONLINE AHORA</span>
+              <input type="number" id="admStatOnline" min="0" placeholder="2" class="stat-card-input">
+            </div>
+            <div class="stat-card">
+              <span class="stat-card-icon">🚀</span>
+              <span class="stat-card-label">BOOSTS</span>
+              <input type="number" id="admStatBoosts" min="0" placeholder="0" class="stat-card-input">
+            </div>
+          </div>
+          <p style="font-size:.38rem;color:#555;margin-top:8px;">* Actualiza estos valores cuando crezca el servidor. Se mostrarán en la barra superior con animación.</p>
+        </div>
+      </div>
+
+      <!-- Tab: CONTENIDO (rules, roadmap, achievements, news) -->
+      <div class="modal-tab-content" id="tab-content">
+        <!-- Rules editor -->
+        <div class="content-editor">
+          <div class="content-editor-title"><span class="ce-icon">📜</span> REGLAS</div>
+          <div id="rulesEditorContainer"></div>
+          <button class="btn-add-content" onclick="addRule()">+ AÑADIR REGLA</button>
+        </div>
+
+        <!-- Roadmap editor -->
+        <div class="content-editor" style="margin-top:32px;">
+          <div class="content-editor-title"><span class="ce-icon">🗺️</span> ROADMAP</div>
+          <div id="roadmapEditorContainer"></div>
+          <button class="btn-add-content" onclick="addTimelineItem()">+ AÑADIR HITO</button>
+        </div>
+
+        <!-- Achievements editor -->
+        <div class="content-editor" style="margin-top:32px;">
+          <div class="content-editor-title"><span class="ce-icon">🏆</span> LOGROS</div>
+          <div id="achievementsEditorContainer"></div>
+        </div>
+
+        <!-- News editor -->
+        <div class="content-editor" style="margin-top:32px;">
+          <div class="content-editor-title"><span class="ce-icon">📰</span> NOTICIAS</div>
+          <div id="newsEditorContainer"></div>
+          <button class="btn-add-content" onclick="addNewsItem()">+ AÑADIR NOTICIA</button>
+        </div>
+      </div>
+
+      <!-- Tab: APARIENCIA (hero, CTA, gallery) -->
+      <div class="modal-tab-content" id="tab-appearance">
+        <!-- Hero editor -->
+        <div class="a-role-section">
+          <div class="a-role-title" style="color:var(--yellow);">🌟 HÉROE (Pantalla principal)</div>
+          <div class="hero-editor-section">
+            <label class="hero-editor-label">TÍTULO LÍNEA 1</label>
+            <input type="text" id="admHeroT1" class="hero-editor-input" placeholder="BROKEN">
+          </div>
+          <div class="hero-editor-section">
+            <label class="hero-editor-label">TÍTULO LÍNEA 2</label>
+            <input type="text" id="admHeroT2" class="hero-editor-input" placeholder="HOPES">
+          </div>
+          <div class="hero-editor-section">
+            <label class="hero-editor-label">CAPÍTULO</label>
+            <input type="text" id="admHeroChapter" class="hero-editor-input" placeholder="— CAPÍTULO I : EL SUBSUELO —">
+          </div>
+          <div class="hero-editor-section">
+            <label class="hero-editor-label">DIÁLOGO DE FLOWEY (una línea por mensaje)</label>
+            <textarea id="admHeroDialogue" class="hero-editor-textarea" placeholder="¡Howdy!&#10;Somos una comunidad..."></textarea>
+          </div>
+          <p style="font-size:.35rem;color:#444;">* Cada línea es un mensaje separado. Usa <em style="color:var(--yellow);">*</em> al inicio para texto sin asterisco de diálogo.</p>
+        </div>
+
+        <!-- CTA editor -->
+        <div class="a-role-section">
+          <div class="a-role-title" style="color:var(--soul-red);">❤️ SECCIÓN UNIRSE (CTA)</div>
+          <div class="hero-editor-section">
+            <label class="hero-editor-label">TÍTULO</label>
+            <textarea id="admCtaTitle" class="hero-editor-textarea" style="min-height:50px;" placeholder="¿QUIERES UNIRTE&#10;A NUESTRA HISTORIA?"></textarea>
+          </div>
+          <div class="hero-editor-section">
+            <label class="hero-editor-label">CITA</label>
+            <textarea id="admCtaQuote" class="hero-editor-textarea" placeholder="* No importa quién seas..."></textarea>
+          </div>
+          <div class="hero-editor-section">
+            <label class="hero-editor-label">URL DEL DISCORD</label>
+            <input type="text" id="admDiscordUrl" class="hero-editor-input" placeholder="https://discord.gg/...">
+          </div>
+        </div>
+
+        <!-- Gallery images editor — REMOVED -->
+      </div>
+
+      <!-- Footer -->
+      <div class="admin-footer">
+        <button class="btn-ut" onclick="saveStaff()">💾 GUARDAR</button>
+        <button class="btn-danger" onclick="logoutAdmin()">🚪 CERRAR SESIÓN</button>
+        <span class="save-ok" id="saveOk">* ¡Cambios guardados!</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOVER CARD -->
+<div id="hover-card" role="tooltip" aria-hidden="true">
+  <div class="hc-banner">
+    <div class="hc-avatar-ph" id="hc-avatar-wrap">👤</div>
+    <div>
+      <div class="hc-name" id="hc-name">—</div>
+      <div class="hc-role-lbl" id="hc-role">—</div>
+    </div>
+  </div>
+  <div class="hc-socials" id="hc-socials"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     JAVASCRIPT MODULES
+     ═══════════════════════════════════════════════ -->
+
+<!-- 1. Loading Screen -->
+<script src="js/loading-screen.js"></script>
+
+<!-- 2. Animated Counters -->
+<script src="js/counters.js"></script>
+
+<!-- 3. Floating Particles -->
+<script src="js/particles.js"></script>
+
+<!-- 4. Audio Manager -->
+<script src="js/audio-manager.js"></script>
+
+<!-- 5. Easter Eggs -->
+<script src="js/easter-eggs.js"></script>
+
+<!-- 6. Discord Live Stats -->
+<script src="js/discord-stats.js"></script>
+
+<!-- Gallery Carousel — REMOVED -->
+<!-- <script src="js/gallery.js"></script> -->
+
+<!-- 8. MAIN APP SCRIPT -->
+<script>
+const SERVER_ID = '1388948751326122078';
+
+const _supa = window.supabase.createClient(
+  'https://ckkbkojunnkozzmpunlb.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNra2Jrb2p1bm5rb3p6bXB1bmxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxODg3MjksImV4cCI6MjA4OTc2NDcyOX0.T4IXqmTAjETi5v7i9u51o6bO3xPwuYEP6CknAuqq5Ok'
+);
+
+const ROLES = [
+  { key:'owner',    label:'💛 PROPIETARIO',   soul:'💛', cls:'owner' },
+  { key:'admin',    label:'🧡 ADMINISTRADOR', soul:'🧡', cls:'admin' },
+  { key:'mod',      label:'💙 MODERADOR',     soul:'💙', cls:'mod' },
+  { key:'creative', label:'💜 CREATIVE LEAD', soul:'💜', cls:'creative' },
+];
+
+const NETS = [
+  { key:'instagram', label:'Instagram', badge:'IG', color:'#e1306c', bg:'#1a0008' },
+  { key:'twitter',   label:'Twitter/X', badge:'TW', color:'#1da1f2', bg:'#00101a' },
+  { key:'youtube',   label:'YouTube',   badge:'YT', color:'#ff0000', bg:'#1a0000' },
+  { key:'tiktok',    label:'TikTok',    badge:'TK', color:'#69c9d0', bg:'#001a1a' },
+  { key:'twitch',    label:'Twitch',    badge:'TV', color:'#9146ff', bg:'#0f0020' },
+  { key:'discord',   label:'Discord',   badge:'DC', color:'#5865f2', bg:'#00001a' },
+];
+
+/* ── NAV BUTTONS: SFX + MUSIC ── */
+function toggleSfxBtn(){
+  var on = AudioMgr.toggleSfx();
+  document.getElementById('sfxIcon').textContent = on ? '🔊' : '🔇';
+  document.getElementById('btnSfxToggle').classList.toggle('active', on);
+}
+function toggleMusicBtn(){
+  var on = AudioMgr.toggleBgMusic();
+  document.getElementById('musicIcon').textContent = on ? '🎶' : '🎵';
+  document.getElementById('btnMusicToggle').classList.toggle('active', on);
+}
+
+/* ── SECTION NAVIGATION DOTS ── */
+function scrollToSection(id){
+  var el = document.getElementById(id);
+  if(el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+(function initNavDots(){
+  var sections = ['inicio','reglas','staff','roadmap','achievements','gallery','news','cta'];
+  var dots = document.querySelectorAll('.nav-dot');
+
+  function update(){
+    var scrollY = window.scrollY + window.innerHeight / 2;
+    var activeIdx = 0;
+    sections.forEach(function(id, i){
+      var el = document.getElementById(id);
+      if(el && el.offsetTop <= scrollY) activeIdx = i;
+    });
+    dots.forEach(function(d, i){
+      d.classList.toggle('active', i === activeIdx);
+    });
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+
+/* ── JOIN EFFECT: screen shake + yellow flash ── */
+function triggerJoinEffect(){
+  document.body.classList.add('shake');
+  setTimeout(function(){ document.body.classList.remove('shake'); }, 400);
+
+  var flash = document.createElement('div');
+  flash.className = 'flash-overlay';
+  document.body.appendChild(flash);
+  setTimeout(function(){ flash.remove(); }, 700);
+}
+
+/* ── TYPEWRITER ── */
+(function(){
+  var el = document.getElementById('typewriter');
+  var li=0, ci=0, full='';
+  function next(){
+    if(!typewriterLines || !typewriterLines.length) return;
+    if(ci < typewriterLines[li].length){ full += typewriterLines[li][ci++]; el.innerHTML = full.replace(/\n/g,'<br>'); setTimeout(next,40); }
+    else if(li < typewriterLines.length-1){ full+='<br>'; li++; ci=0; setTimeout(next,500); }
+  }
+  setTimeout(next, 950);
+})();
+
+/* ── SCROLL REVEAL ── */
+const ro = new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{ if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*75); ro.unobserve(e.target); } });
+},{ threshold:.1 });
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+/* ── SUPABASE: LOAD STAFF ── */
+async function loadStaff(){
+  const { data, error } = await _supa.from('staff').select('id, role, username, socials').order('created_at');
+  if(error){ console.error('loadStaff error:', error.message, error.code, error); return { owner:[], admin:[], mod:[], creative:[] }; }
+  const staff = { owner:[], admin:[], mod:[], creative:[] };
+  (data||[]).forEach(r=>{ if(staff[r.role]) staff[r.role].push({ id:r.id, username:r.username, socials:r.socials||{} }); });
+  return staff;
+}
+
+/* ── SUPABASE: SAVE STAFF ── */
+async function saveStaffToDb(staff){
+  const { error: delErr } = await _supa.from('staff').delete().neq('id','00000000-0000-0000-0000-000000000000');
+  if(delErr){ console.error('delete:', delErr); return false; }
+  const rows = [];
+  Object.entries(staff).forEach(([role, members])=>{
+    members.forEach(m=>rows.push({ role, username:m.username, socials:m.socials||{} }));
+  });
+  if(rows.length){
+    const { error: insErr } = await _supa.from('staff').insert(rows);
+    if(insErr){ console.error('insert:', insErr); return false; }
+  }
+  return true;
+}
+
+/* ── HOVER CARD ── */
+const hoverCard = document.getElementById('hover-card');
+let hcTimer = null;
+
+function showHoverCard(chip, member, roleObj){
+  clearTimeout(hcTimer);
+  const s = member.socials || {};
+  const activeSocials = NETS.filter(n=> s[n.key]?.user || s[n.key]?.url);
+
+  const avatarWrap = document.getElementById('hc-avatar-wrap');
+  if(s.avatar){
+    avatarWrap.innerHTML = `<img class="hc-avatar" src="${s.avatar}" alt="" onerror="this.parentNode.innerHTML='👤'">`;
+  } else {
+    avatarWrap.innerHTML = roleObj.soul;
+    avatarWrap.className = 'hc-avatar-ph';
+  }
+  document.getElementById('hc-name').textContent = member.username;
+  document.getElementById('hc-role').textContent = roleObj.label.replace(/^\S+\s/,'');
+
+  const wrap = document.getElementById('hc-socials');
+  wrap.innerHTML = '';
+  if(!activeSocials.length){
+    wrap.innerHTML = `<div class="hc-empty">* Sin redes configuradas.</div>`;
+  } else {
+    activeSocials.forEach(net=>{
+      const nd = s[net.key];
+      const url = nd.url || '#';
+      const user = nd.user || url;
+      const row = document.createElement('a');
+      row.className = 'hc-row';
+      row.href = url; row.target = '_blank'; row.rel = 'noopener';
+      row.innerHTML = `
+        <span class="hc-badge" style="background:${net.color};color:#000">${net.badge}</span>
+        <span class="hc-user">${user}</span>
+        <span class="hc-arrow">▶</span>`;
+      wrap.appendChild(row);
+    });
+  }
+
+  const rect = chip.getBoundingClientRect();
+  const cardW = 272, cardH = hoverCard.offsetHeight || 180;
+  let top = rect.bottom + 8;
+  let left = rect.left;
+  if(top + cardH > window.innerHeight - 12) top = rect.top - cardH - 8;
+  if(left + cardW > window.innerWidth - 12) left = window.innerWidth - cardW - 12;
+  hoverCard.style.top  = top  + 'px';
+  hoverCard.style.left = left + 'px';
+  hoverCard.classList.add('hc-visible');
+}
+
+function hideHoverCard(){
+  hcTimer = setTimeout(()=> hoverCard.classList.remove('hc-visible'), 120);
+}
+
+hoverCard.addEventListener('mouseenter', ()=> clearTimeout(hcTimer));
+hoverCard.addEventListener('mouseleave', hideHoverCard);
+
+/* ── RENDER STAFF ── */
+async function renderStaff(){
+  const staff = await loadStaff();
+  const wrap = document.getElementById('staff-display');
+  wrap.innerHTML = '';
+  ROLES.forEach(role=>{
+    const block = document.createElement('div');
+    block.className = 'role-block reveal';
+    const hdr = document.createElement('div');
+    hdr.className = 'role-header';
+    hdr.innerHTML = `<span class="soul-icon">${role.soul}</span><span class="role-name-lbl ${role.cls}">${role.label}</span><div class="role-line ${role.cls}"></div>`;
+    block.appendChild(hdr);
+    const row = document.createElement('div');
+    row.className = 'members-row';
+    const members = staff[role.key]||[];
+    if(!members.length){
+      const em = document.createElement('span');
+      em.className = 'no-members';
+      em.textContent = '* Sin guardianes asignados.';
+      row.appendChild(em);
+    } else {
+      members.forEach(member=>{
+        const chip = document.createElement('div');
+        chip.className = `member-chip ${role.cls}`;
+        const hasSocials = Object.values(member.socials||{}).some(v=> v?.user||v?.url);
+        chip.innerHTML = `<span class="chip-soul">${role.soul}</span><span class="chip-name">${member.username}</span>${hasSocials ? '<span style="font-size:.5rem;color:var(--text-dim);margin-left:4px">▲</span>' : ''}`;
+        chip.addEventListener('mouseenter', ()=> showHoverCard(chip, member, role));
+        chip.addEventListener('mouseleave', hideHoverCard);
+        row.appendChild(chip);
+      });
+    }
+    block.appendChild(row);
+    wrap.appendChild(block);
+    ro.observe(block);
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   ADMIN PANEL — revamped
+   ═══════════════════════════════════════════════ */
+
+/* ── Keyboard combo: Shift+Alt+A ── */
+document.addEventListener('keydown', function(e){
+  if(e.shiftKey && e.altKey && (e.key === 'A' || e.key === 'a')){
+    e.preventDefault();
+    openAdmin();
+  }
+  if(e.key === 'Escape') closeAdmin();
+});
+
+/* ── SUPABASE AUTH ── */
+async function tryLogin(){
+  const email = document.getElementById('adminEmail').value.trim();
+  const pass  = document.getElementById('adminPass').value;
+  const btn   = document.getElementById('loginBtn');
+  const err   = document.getElementById('loginError');
+  err.classList.remove('show');
+  btn.textContent = '...'; btn.disabled = true;
+  const { error } = await _supa.auth.signInWithPassword({ email, password: pass });
+  btn.textContent = 'ACCEDER'; btn.disabled = false;
+  if(error){ err.classList.add('show'); document.getElementById('adminPass').value = ''; return; }
+  showPanel();
+}
+
+async function logoutAdmin(){
+  await _supa.auth.signOut();
+  closeAdmin();
+}
+
+function openAdmin(){
+  document.getElementById('adminModal').classList.add('open');
+  _supa.auth.getSession().then(({ data })=>{
+    if(data.session) showPanel();
+    else {
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('adminPanel').classList.remove('show');
+      document.getElementById('adminPass').value = '';
+      document.getElementById('loginError').classList.remove('show');
+    }
+  });
+}
+function closeAdmin(){ document.getElementById('adminModal').classList.remove('open'); }
+document.getElementById('adminModal').addEventListener('click',function(e){ if(e.target===this)closeAdmin(); });
+
+/* ── TABS ── */
+function switchTab(tabName){
+  document.querySelectorAll('.modal-tab').forEach(function(t){
+    t.classList.toggle('active', t.dataset.tab === tabName);
+  });
+  document.querySelectorAll('.modal-tab-content').forEach(function(c){
+    c.classList.remove('active');
+  });
+  var target = document.getElementById('tab-' + tabName);
+  if(target) target.classList.add('active');
+}
+
+async function showPanel(){
+  document.getElementById('loginForm').style.display = 'none';
+  document.getElementById('adminPanel').classList.add('show');
+  await buildAdminLists();
+  loadStatsFields();
+  await loadAllContent();
+}
+
+async function loadAllContent(){
+  var data;
+  try { data = await loadPageContent(); } catch(e){ data = null; }
+  if(!data){
+    data = {
+      rules: DEFAULT_RULES, roadmap: DEFAULT_ROADMAP,
+      achievements: DEFAULT_ACHIEVEMENTS, news: DEFAULT_NEWS,
+      hero: DEFAULT_HERO, cta: DEFAULT_CTA, gallery: []
+    };
+  }
+  buildRulesEditor(data.rules);
+  buildRoadmapEditor(data.roadmap);
+  buildAchievementsEditor(data.achievements);
+  buildNewsEditor(data.news);
+  loadHeroCtaFields(data);
+}
+
+function loadStatsFields(){
+  var stats;
+  try { stats = JSON.parse(localStorage.getItem('bh_discord_stats')) || {}; } catch(e){ stats = {}; }
+  document.getElementById('admStatTotal').value = stats.total || '';
+  document.getElementById('admStatOnline').value = stats.online || '';
+  document.getElementById('admStatBoosts').value = stats.boosts || '';
+}
+
+/* ── ADMIN: BUILD MEMBER CARDS ── */
+async function buildAdminLists(){
+  const staff = await loadStaff();
+  ROLES.forEach(function(role){
+    const list = document.getElementById('list-' + role.key);
+    list.innerHTML = '';
+    (staff[role.key]||[]).forEach(function(member){ list.appendChild(makeMemberCard(role.key, member)); });
+  });
+}
+
+/* Create a single member card element */
+function makeMemberCard(role, member){
+  const m = member || { username:'', socials:{} };
+  const s = m.socials || {};
+
+  const card = document.createElement('div');
+  card.className = 'adm-member-card';
+
+  /* Top row */
+  const topRow = document.createElement('div');
+  topRow.className = 'adm-member-top';
+
+  const inp = document.createElement('input');
+  inp.type = 'text'; inp.value = m.username; inp.placeholder = 'Nombre de Discord...';
+
+  const toggleBtn = document.createElement('button');
+  toggleBtn.className = 'btn-socials';
+  toggleBtn.textContent = '▼ REDES';
+
+  const delBtn = document.createElement('button');
+  delBtn.className = 'btn-del';
+  delBtn.textContent = '✕';
+  delBtn.onclick = function(){ card.remove(); };
+
+  topRow.appendChild(inp); topRow.appendChild(toggleBtn); topRow.appendChild(delBtn);
+  card.appendChild(topRow);
+
+  /* Socials panel (expandable) */
+  const panel = document.createElement('div');
+  panel.className = 'adm-socials-panel';
+  panel.innerHTML = '<div class="adm-socials-inner"></div>';
+  const inner = panel.querySelector('.adm-socials-inner');
+
+  /* Avatar row */
+  const avatarRow = document.createElement('div');
+  avatarRow.className = 'adm-avatar-row';
+  const avatarInp = document.createElement('input');
+  avatarInp.type = 'text'; avatarInp.dataset.social = 'avatar';
+  avatarInp.value = s.avatar || ''; avatarInp.placeholder = 'https://i.imgur.com/...';
+  const avatarPreview = document.createElement('img');
+  avatarPreview.className = 'adm-avatar-preview';
+  avatarPreview.src = s.avatar || '';
+  avatarPreview.style.display = s.avatar ? 'block' : 'none';
+  avatarInp.addEventListener('input', function(){
+    avatarPreview.src = avatarInp.value;
+    avatarPreview.style.display = avatarInp.value ? 'block' : 'none';
+  });
+  avatarRow.appendChild(avatarInp);
+  avatarRow.appendChild(avatarPreview);
+  inner.appendChild(avatarRow);
+
+  /* Social network cards grid */
+  const grid = document.createElement('div');
+  grid.className = 'social-editor-grid';
+  NETS.forEach(function(net){
+    const nd = s[net.key] || {};
+    const socCard = document.createElement('div');
+    socCard.className = 'social-card';
+    socCard.innerHTML =
+      '<span class="social-card-badge" style="background:' + net.color + ';color:#000;border-color:' + net.color + '">' + net.badge + '</span>' +
+      '<div class="social-card-fields">' +
+        '<input class="social-card-input" type="text" data-social="' + net.key + '" data-field="user" value="' + (nd.user||'') + '" placeholder="@usuario ' + net.label + '">' +
+        '<input class="social-card-url" type="text" data-social="' + net.key + '" data-field="url" value="' + (nd.url||'') + '" placeholder="https://...">' +
+      '</div>';
+    grid.appendChild(socCard);
+  });
+  inner.appendChild(grid);
+
+  card.appendChild(panel);
+
+  /* Toggle */
+  toggleBtn.onclick = function(){
+    const isOpen = panel.classList.toggle('open');
+    toggleBtn.classList.toggle('open', isOpen);
+    toggleBtn.textContent = isOpen ? '▲ REDES' : '▼ REDES';
+    if(isOpen) refreshStatsPreview();
+  };
+
+  return card;
+}
+
+function addMember(role){
+  const list = document.getElementById('list-' + role);
+  const card = makeMemberCard(role, null);
+  list.appendChild(card);
+  card.querySelector('input').focus();
+}
+
+/* Read member data from card */
+function readMemberFromCard(card){
+  const topRow = card.querySelector('.adm-member-top');
+  if(!topRow) return null;
+  const username = topRow.querySelector('input[type="text"]').value.trim();
+  if(!username) return null;
+  const socials = {};
+  const avatarInp = card.querySelector('[data-social="avatar"]');
+  if(avatarInp && avatarInp.value.trim()) socials.avatar = avatarInp.value.trim();
+  NETS.forEach(function(net){
+    const uInp = card.querySelector('[data-social="' + net.key + '"][data-field="user"]');
+    const lInp = card.querySelector('[data-social="' + net.key + '"][data-field="url"]');
+    const user = uInp ? uInp.value.trim() : '';
+    const url = lInp ? lInp.value.trim() : '';
+    if(user || url) socials[net.key] = { user: user||'', url: url||'' };
+  });
+  return { username, socials };
+}
+
+function refreshStatsPreview(){ /* placeholder */ }
+
+/* ═══════════════════════════════════════════════
+   CONTENT EDITORS — Rules, Roadmap, Achievements, News, Hero, CTA, Gallery
+   ═══════════════════════════════════════════════ */
+
+/* ── DEFAULT DATA ── */
+var DEFAULT_RULES = [
+  { name:'RESPETO ANTE TODO', text:'En este mundo, se trata a todos con respeto. El acoso, los insultos y la discriminación están prohibidos. El camino pacifista siempre existe.' },
+  { name:'SIN SPAM', text:'Los mensajes repetitivos, cadenas de texto y el flood rompen el flujo. Mantén las conversaciones limpias y con propósito.' },
+  { name:'CANALES CORRECTOS', text:'Cada canal tiene su función. Las ideas de Roblox, el arte y el chat general tienen su propio espacio. Respétalos.' },
+  { name:'CONTENIDO APROPIADO', text:'El contenido NSFW o perturbador está terminantemente prohibido. Esta comunidad es abierta a todos los públicos.' },
+  { name:'SIN AUTOPROMOCIÓN', text:'Prohibido publicitar otros servidores o proyectos sin autorización del staff. Usa el canal habilitado para ello.' },
+  { name:'APORTA Y CRECE', text:'Tu voz importa. Comparte ideas, da feedback del juego y forma parte activa de esta historia. Todos escriben el final.' },
+];
+
+var DEFAULT_ROADMAP = [
+  { date:'2024 — COMPLETADO', title:'Creación del Servidor', desc:'BROKEN HOPES nació en el subsuelo. Los primeros guardianes fueron elegidos.', status:'done' },
+  { date:'2025 — COMPLETADO', title:'Comunidad Activa', desc:'La comunidad creció con miembros activos de Roblox, arte y creatividad.', status:'done' },
+  { date:'2025 — EN PROGRESO', title:'Juego de Roblox', desc:'Desarrollo del juego oficial de BROKEN HOPES en Roblox. Mecánicas, mapas y más.', status:'wip' },
+  { date:'PRÓXIMAMENTE', title:'Eventos de Comunidad', desc:'Torneos, game nights y eventos especiales con recompensas exclusivas.', status:'future' },
+  { date:'PRÓXIMAMENTE', title:'Galería de Arte Comunitaria', desc:'Espacio dedicado para que los miembros compartan su arte y creaciones.', status:'future' },
+  { date:'???', title:'???', desc:'* Algo se esconde en las sombras del subsuelo...', status:'future' },
+];
+
+var DEFAULT_ACHIEVEMENTS = [
+  { icon:'❤', name:'DETERMINADO', desc:'Únete al servidor', locked:false },
+  { icon:'🎨', name:'ARTISTA', desc:'Comparte tu arte con la comunidad', locked:false },
+  { icon:'🎮', name:'GAMER', desc:'Participa en sesiones de Roblox', locked:false },
+  { icon:'💬', name:'SOCIAL', desc:'Sé activo en el chat general', locked:false },
+  { icon:'🔒', name:'???', desc:'Bloqueado — sigue explorando', locked:true },
+  { icon:'🔒', name:'???', desc:'Bloqueado — sigue explorando', locked:true },
+  { icon:'🔒', name:'???', desc:'Bloqueado — sigue explorando', locked:true },
+  { icon:'🔒', name:'???', desc:'Bloqueado — sigue explorando', locked:true },
+];
+
+var DEFAULT_NEWS = [
+  { date:'2025.04.01', title:'¡La Web Oficial Está Viva!', body:'* Después de mucho trabajo, la página oficial de BROKEN HOPES ha nacido.\n        Incluye reglas, staff, roadmap y mucho más.', tag:'ANUNCIO' },
+  { date:'2025.03.15', title:'Nuevo Juego de Roblox en Desarrollo', body:'* El equipo creativo está trabajando en un nuevo juego.\n        Pronto habrá novedades sobre mecánicas y personajes.', tag:'ROBLOX' },
+  { date:'2025.02.20', title:'Staff Expandido', body:'* Nuevos guardianes se han unido para proteger el subsuelo.\n        Revisa la sección de Staff para ver los cambios.', tag:'STAFF' },
+];
+
+var DEFAULT_HERO = {
+  t1:'BROKEN',
+  t2:'HOPES',
+  chapter:'— CAPÍTULO I : EL SUBSUELO —',
+  dialogue:'¡Howdy! Soy el servidor BROKEN HOPES.\nSomos una comunidad de Roblox, arte y creatividad.\n* Aquí, todos pueden DETERMINARSE.\n¿Te unes a nuestra historia?'
+};
+
+var DEFAULT_CTA = {
+  title:'¿QUIERES UNIRTE\nA NUESTRA HISTORIA?',
+  quote:'* No importa quién seas o de dónde vengas.\n* En BROKEN HOPES, todos tienen un lugar.\n* ¿O acaso tienes miedo de DETERMINARTE?',
+  discordUrl:'https://discord.gg/VGKZhwThpw'
+};
+
+/* Load from Supabase or fallback to defaults */
+async function loadPageContent(){
+  var result;
+  try {
+    result = await _supa.from('page_content').select('key, value').order('key');
+  } catch(e){ result = { data:null, error:e }; }
+
+  var content = {};
+  (result.data||[]).forEach(function(r){ content[r.key] = r.value; });
+
+  return {
+    rules:       content.rules       || DEFAULT_RULES,
+    roadmap:     content.roadmap     || DEFAULT_ROADMAP,
+    achievements: content.achievements || DEFAULT_ACHIEVEMENTS,
+    news:        content.news        || DEFAULT_NEWS,
+    hero:        content.hero        || DEFAULT_HERO,
+    cta:         content.cta         || DEFAULT_CTA,
+  };
+}
+
+/* ── RULES EDITOR ── */
+function buildRulesEditor(rules){
+  var c = document.getElementById('rulesEditorContainer');
+  c.innerHTML = '';
+  rules.forEach(function(rule, i){
+    var card = document.createElement('div');
+    card.className = 'rule-editor-card';
+    card.innerHTML =
+      '<span class="rule-editor-num">#' + (i+1) + '</span>' +
+      '<input class="rule-editor-input" type="text" value="' + escHtml(rule.name) + '" placeholder="NOMBRE DE LA REGLA">' +
+      '<textarea class="rule-editor-textarea" rows="2" placeholder="Descripción de la regla...">' + escHtml(rule.text) + '</textarea>';
+    c.appendChild(card);
+  });
+}
+
+function addRule(){
+  var c = document.getElementById('rulesEditorContainer');
+  var idx = c.children.length + 1;
+  var card = document.createElement('div');
+  card.className = 'rule-editor-card';
+  card.innerHTML =
+    '<span class="rule-editor-num">#' + idx + '</span>' +
+    '<input class="rule-editor-input" type="text" placeholder="NOMBRE DE LA REGLA">' +
+    '<textarea class="rule-editor-textarea" rows="2" placeholder="Descripción de la regla..."></textarea>';
+  c.appendChild(card);
+  card.querySelector('input').focus();
+}
+
+/* ── ROADMAP EDITOR ── */
+function buildRoadmapEditor(items){
+  var c = document.getElementById('roadmapEditorContainer');
+  c.innerHTML = '';
+  items.forEach(function(item, i){
+    var card = document.createElement('div');
+    card.className = 'tl-editor-card ' + (item.status||'future');
+    card.innerHTML =
+      '<div class="tl-editor-fields">' +
+        '<input class="tl-editor-input" type="text" value="' + escHtml(item.date) + '" placeholder="FECHA / ESTADO">' +
+        '<input class="tl-editor-input" type="text" value="' + escHtml(item.title) + '" placeholder="TÍTULO DEL HITO">' +
+        '<textarea class="tl-editor-textarea" rows="2" placeholder="Descripción...">' + escHtml(item.desc) + '</textarea>' +
+      '</div>' +
+      '<button class="tl-editor-status ' + (item.status||'future') + '" onclick="cycleTlStatus(this)">' + statusLabel(item.status) + '</button>' +
+      '<button class="tl-editor-del" onclick="this.closest(\'.tl-editor-card\').remove()">✕</button>';
+    c.appendChild(card);
+  });
+}
+
+function addTimelineItem(){
+  var c = document.getElementById('roadmapEditorContainer');
+  var card = document.createElement('div');
+  card.className = 'tl-editor-card future';
+  card.innerHTML =
+    '<div class="tl-editor-fields">' +
+      '<input class="tl-editor-input" type="text" placeholder="FECHA / ESTADO">' +
+      '<input class="tl-editor-input" type="text" placeholder="TÍTULO DEL HITO">' +
+      '<textarea class="tl-editor-textarea" rows="2" placeholder="Descripción..."></textarea>' +
+    '</div>' +
+    '<button class="tl-editor-status future" onclick="cycleTlStatus(this)">○ FUTURO</button>' +
+    '<button class="tl-editor-del" onclick="this.closest(\'.tl-editor-card\').remove()">✕</button>';
+  c.appendChild(card);
+  card.querySelector('input').focus();
+}
+
+function cycleTlStatus(btn){
+  var order = ['done','wip','future'];
+  var labels = ['✓ COMPLETADO','⟳ EN PROGRESO','○ FUTURO'];
+  var cur = order.indexOf(btn.className.replace('tl-editor-status ',''));
+  if(cur < 0) cur = 2;
+  var next = (cur + 1) % 3;
+  btn.className = 'tl-editor-status ' + order[next];
+  btn.textContent = labels[next];
+  btn.closest('.tl-editor-card').className = 'tl-editor-card ' + order[next];
+}
+
+function statusLabel(s){
+  if(s==='done') return '✓ COMPLETADO';
+  if(s==='wip') return '⟳ EN PROGRESO';
+  return '○ FUTURO';
+}
+
+/* ── ACHIEVEMENTS EDITOR ── */
+function buildAchievementsEditor(items){
+  var c = document.getElementById('achievementsEditorContainer');
+  c.innerHTML = '';
+  items.forEach(function(ach, i){
+    var card = document.createElement('div');
+    card.className = 'ach-editor-card' + (ach.locked ? ' locked' : '');
+    card.innerHTML =
+      '<span class="ach-editor-icon">' + ach.icon + '</span>' +
+      '<div class="ach-editor-fields">' +
+        '<input class="ach-editor-input" type="text" value="' + escHtml(ach.name) + '" placeholder="NOMBRE">' +
+        '<input class="ach-editor-input" type="text" value="' + escHtml(ach.desc) + '" placeholder="DESCRIPCIÓN">' +
+      '</div>' +
+      '<button class="ach-editor-toggle" onclick="toggleAchievement(this)" title="' + (ach.locked ? 'Desbloquear' : 'Bloquear') + '">' + (ach.locked ? '🔒' : '✅') + '</button>';
+    c.appendChild(card);
+  });
+}
+
+function toggleAchievement(btn){
+  var card = btn.closest('.ach-editor-card');
+  var isLocked = card.classList.toggle('locked');
+  btn.textContent = isLocked ? '🔒' : '✅';
+  btn.title = isLocked ? 'Desbloquear' : 'Bloquear';
+}
+
+/* ── NEWS EDITOR ── */
+function buildNewsEditor(items){
+  var c = document.getElementById('newsEditorContainer');
+  c.innerHTML = '';
+  items.forEach(function(news){
+    var card = document.createElement('div');
+    card.className = 'news-editor-card';
+    card.innerHTML =
+      '<button class="news-editor-del" onclick="this.closest(\'.news-editor-card\').remove()">✕</button>' +
+      '<input class="news-editor-date-input" type="text" value="' + escHtml(news.date) + '" placeholder="2025.01.01">' +
+      '<input class="news-editor-tag-input" type="text" value="' + escHtml(news.tag) + '" placeholder="TAG">' +
+      '<input class="news-editor-title-input" type="text" value="' + escHtml(news.title) + '" placeholder="TÍTULO">' +
+      '<textarea class="news-editor-body-textarea" rows="3" placeholder="Cuerpo de la noticia...">' + escHtml(news.body) + '</textarea>';
+    c.appendChild(card);
+  });
+}
+
+function addNewsItem(){
+  var c = document.getElementById('newsEditorContainer');
+  var card = document.createElement('div');
+  card.className = 'news-editor-card';
+  card.innerHTML =
+    '<button class="news-editor-del" onclick="this.closest(\'.news-editor-card\').remove()">✕</button>' +
+    '<input class="news-editor-date-input" type="text" placeholder="2025.01.01">' +
+    '<input class="news-editor-tag-input" type="text" placeholder="TAG">' +
+    '<input class="news-editor-title-input" type="text" placeholder="TÍTULO">' +
+    '<textarea class="news-editor-body-textarea" rows="3" placeholder="Cuerpo de la noticia..."></textarea>';
+  c.appendChild(card);
+  card.querySelector('.news-editor-title-input').focus();
+}
+
+/* ── HERO / CTA EDITOR ── */
+function loadHeroCtaFields(data){
+  document.getElementById('admHeroT1').value = (data.hero||{}).t1 || '';
+  document.getElementById('admHeroT2').value = (data.hero||{}).t2 || '';
+  document.getElementById('admHeroChapter').value = (data.hero||{}).chapter || '';
+  document.getElementById('admHeroDialogue').value = (data.hero||{}).dialogue || '';
+  document.getElementById('admCtaTitle').value = (data.cta||{}).title || '';
+  document.getElementById('admCtaQuote').value = (data.cta||{}).quote || '';
+  document.getElementById('admDiscordUrl').value = (data.cta||{}).discordUrl || '';
+}
+
+/* ── RENDER PAGE CONTENT (applies saved changes to the actual page) ── */
+function renderPageContent(data){
+  if(!data) return;
+
+  /* Rules */
+  if(data.rules && data.rules.length){
+    var rulesGrid = document.querySelector('#reglas .rules-grid');
+    if(rulesGrid){
+      rulesGrid.innerHTML = '';
+      data.rules.forEach(function(rule, i){
+        var card = document.createElement('div');
+        card.className = 'rule-card reveal';
+        card.setAttribute('data-n', i+1);
+        card.innerHTML =
+          '<div class="rule-name">' + escHtml(rule.name) + '</div>' +
+          '<p class="rule-text"><span class="rule-prefix">* </span>' + escHtml(rule.text) + '</p>';
+        rulesGrid.appendChild(card);
+        ro.observe(card);
+      });
+    }
+  }
+
+  /* Roadmap */
+  if(data.roadmap && data.roadmap.length){
+    var tl = document.querySelector('#roadmap .timeline');
+    if(tl){
+      tl.innerHTML = '';
+      data.roadmap.forEach(function(item){
+        var el = document.createElement('div');
+        var statusLabels = { done:'✓ COMPLETADO', wip:'⟳ EN PROGRESO', future:'○ FUTURO' };
+        el.className = 'tl-item ' + (item.status||'future') + ' reveal';
+        el.innerHTML =
+          '<div class="tl-date">' + escHtml(item.date) + '</div>' +
+          '<div class="tl-title">' + escHtml(item.title) + '</div>' +
+          '<div class="tl-desc">' + escHtml(item.desc) + '</div>' +
+          '<span class="tl-badge ' + (item.status||'future') + '">' + (statusLabels[item.status]||'○ ???') + '</span>';
+        tl.appendChild(el);
+        ro.observe(el);
+      });
+    }
+  }
+
+  /* Achievements */
+  if(data.achievements && data.achievements.length){
+    var badgesGrid = document.querySelector('#achievements .badges-grid');
+    if(badgesGrid){
+      badgesGrid.innerHTML = '';
+      data.achievements.forEach(function(ach){
+        var card = document.createElement('div');
+        card.className = 'badge-card reveal' + (ach.locked ? ' locked' : '');
+        card.innerHTML =
+          '<span class="badge-icon">' + ach.icon + '</span>' +
+          '<div class="badge-name">' + escHtml(ach.name) + '</div>' +
+          '<div class="badge-desc">' + escHtml(ach.desc) + '</div>';
+        badgesGrid.appendChild(card);
+        ro.observe(card);
+      });
+    }
+  }
+
+  /* News */
+  if(data.news && data.news.length){
+    var newsGrid = document.querySelector('#news .news-grid');
+    if(newsGrid){
+      newsGrid.innerHTML = '';
+      data.news.forEach(function(n){
+        var card = document.createElement('div');
+        card.className = 'news-card reveal';
+        card.innerHTML =
+          '<div class="news-date">' + escHtml(n.date) + '</div>' +
+          '<div class="news-title">' + escHtml(n.title) + '</div>' +
+          '<div class="news-body">' + escHtml(n.body).replace(/\n/g,'<br>') + '</div>' +
+          '<span class="news-tag">' + escHtml(n.tag) + '</span>';
+        newsGrid.appendChild(card);
+        ro.observe(card);
+      });
+    }
+  }
+
+  /* Hero */
+  if(data.hero){
+    var h1 = document.querySelector('.hero-title .t1');
+    var h2 = document.querySelector('.hero-title .t2');
+    var ch = document.querySelector('.hero-chapter');
+    if(h1 && data.hero.t1) h1.textContent = data.hero.t1;
+    if(h2 && data.hero.t2) h2.textContent = data.hero.t2;
+    if(ch && data.hero.chapter) ch.textContent = data.hero.chapter;
+
+    /* Update typewriter lines */
+    if(data.hero.dialogue){
+      typewriterLines = data.hero.dialogue.split('\n').filter(function(l){ return l.trim(); });
+      typewriterIdx = 0; typewriterLineIdx = 0;
+      typewriterFull = '';
+    }
+  }
+
+  /* CTA */
+  if(data.cta){
+    var ctaTitle = document.querySelector('.cta-title');
+    var ctaQuote = document.querySelector('.cta-quote');
+    if(ctaTitle && data.cta.title) ctaTitle.innerHTML = escHtml(data.cta.title).replace(/\n/g,'<br>');
+    if(ctaQuote && data.cta.quote){
+      var html = escHtml(data.cta.quote).replace(/\n/g,'<br>').replace(/\* /g,'<em>* </em>').replace(/\* /g,'<em>* </em>');
+      ctaQuote.innerHTML = html;
+    }
+    var ctaLink = document.querySelector('#cta a[href*="discord.gg"]');
+    if(ctaLink && data.cta.discordUrl) ctaLink.href = data.cta.discordUrl;
+  }
+
+  /* Gallery — REMOVED */
+}
+
+/* Typewriter state (overridable) */
+var typewriterLines = [
+  "¡Howdy! Soy el servidor BROKEN HOPES.",
+  "Somos una comunidad de Roblox, arte y creatividad.",
+  "* Aquí, todos pueden DETERMINARSE.",
+  "¿Te unes a nuestra historia?"
+];
+var typewriterIdx = 0, typewriterLineIdx = 0, typewriterFull = '';
+
+function escHtml(s){
+  if(!s) return '';
+  var d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+/* ── COLLECT EDITOR DATA ── */
+function collectEditorData(){
+  var data = {};
+
+  /* Rules */
+  data.rules = [];
+  document.querySelectorAll('#rulesEditorContainer .rule-editor-card').forEach(function(card){
+    var name = card.querySelector('.rule-editor-input').value.trim();
+    var text = card.querySelector('.rule-editor-textarea').value.trim();
+    if(name || text) data.rules.push({ name:name, text:text });
+  });
+
+  /* Roadmap */
+  data.roadmap = [];
+  document.querySelectorAll('#roadmapEditorContainer .tl-editor-card').forEach(function(card){
+    var inputs = card.querySelectorAll('.tl-editor-input');
+    var textarea = card.querySelector('.tl-editor-textarea');
+    var statusBtn = card.querySelector('.tl-editor-status');
+    var status = statusBtn ? statusBtn.className.replace('tl-editor-status ','') : 'future';
+    data.roadmap.push({
+      date: inputs[0] ? inputs[0].value.trim() : '',
+      title: inputs[1] ? inputs[1].value.trim() : '',
+      desc: textarea ? textarea.value.trim() : '',
+      status: status
+    });
+  });
+
+  /* Achievements */
+  data.achievements = [];
+  document.querySelectorAll('#achievementsEditorContainer .ach-editor-card').forEach(function(card){
+    var icon = card.querySelector('.ach-editor-icon').textContent.trim();
+    var inputs = card.querySelectorAll('.ach-editor-input');
+    var locked = card.classList.contains('locked');
+    data.achievements.push({
+      icon: locked ? '🔒' : icon,
+      name: inputs[0] ? inputs[0].value.trim() : '',
+      desc: inputs[1] ? inputs[1].value.trim() : '',
+      locked: locked
+    });
+  });
+
+  /* News */
+  data.news = [];
+  document.querySelectorAll('#newsEditorContainer .news-editor-card').forEach(function(card){
+    var dateInp = card.querySelector('.news-editor-date-input');
+    var tagInp = card.querySelector('.news-editor-tag-input');
+    var titleInp = card.querySelector('.news-editor-title-input');
+    var bodyInp = card.querySelector('.news-editor-body-textarea');
+    data.news.push({
+      date: dateInp ? dateInp.value.trim() : '',
+      tag: tagInp ? tagInp.value.trim() : '',
+      title: titleInp ? titleInp.value.trim() : '',
+      body: bodyInp ? bodyInp.value.trim() : ''
+    });
+  });
+
+  /* Hero */
+  data.hero = {
+    t1: document.getElementById('admHeroT1').value.trim(),
+    t2: document.getElementById('admHeroT2').value.trim(),
+    chapter: document.getElementById('admHeroChapter').value.trim(),
+    dialogue: document.getElementById('admHeroDialogue').value.trim()
+  };
+
+  /* CTA */
+  data.cta = {
+    title: document.getElementById('admCtaTitle').value.trim(),
+    quote: document.getElementById('admCtaQuote').value.trim(),
+    discordUrl: document.getElementById('admDiscordUrl').value.trim()
+  };
+
+  /* Gallery — REMOVED */
+  data.gallery = [];
+
+  return data;
+}
+
+/* ── SAVE (everything) ── */
+async function saveStaff(){
+  var btn = document.querySelector('.admin-footer .btn-ut');
+  btn.textContent = '...'; btn.disabled = true;
+  btn.classList.add('btn-ut-loading');
+
+  /* 1. Save staff */
+  var staff = { owner:[], admin:[], mod:[], creative:[] };
+  ROLES.forEach(function(role){
+    var list = document.getElementById('list-' + role.key);
+    list.querySelectorAll('.adm-member-card').forEach(function(card){
+      var m = readMemberFromCard(card);
+      if(m) staff[role.key].push(m);
+    });
+  });
+
+  /* 2. Save discord stats */
+  var total  = parseInt(document.getElementById('admStatTotal').value, 10) || 0;
+  var online = parseInt(document.getElementById('admStatOnline').value, 10) || 0;
+  var boosts = parseInt(document.getElementById('admStatBoosts').value, 10) || 0;
+  localStorage.setItem('bh_discord_stats', JSON.stringify({ total: total, online: online, boosts: boosts }));
+
+  /* 3. Collect all content data */
+  var contentData = collectEditorData();
+
+  /* 4. Save content to Supabase */
+  var contentRows = [
+    { key:'rules', value: contentData.rules },
+    { key:'roadmap', value: contentData.roadmap },
+    { key:'achievements', value: contentData.achievements },
+    { key:'news', value: contentData.news },
+    { key:'hero', value: contentData.hero },
+    { key:'cta', value: contentData.cta },
+    { key:'gallery', value: contentData.gallery },
+  ];
+
+  var staffOk = false, contentOk = false;
+  try { staffOk = await saveStaffToDb(staff); } catch(e){ console.error(e); }
+
+  /* Save content — delete existing + insert */
+  try {
+    await _supa.from('page_content').delete().neq('key','__none__');
+    var insRows = contentRows.filter(function(r){ return r.value && (Array.isArray(r.value) ? r.value.length : true); });
+    if(insRows.length) await _supa.from('page_content').insert(insRows);
+    contentOk = true;
+  } catch(e){
+    console.error('Content save error:', e);
+    contentOk = false;
+  }
+
+  btn.textContent = '💾 GUARDAR'; btn.disabled = false;
+  btn.classList.remove('btn-ut-loading');
+
+  if(staffOk && contentOk){
+    await renderStaff();
+    if(window.refreshDiscordStats) window.refreshDiscordStats();
+    renderPageContent(contentData);
+    var notice = document.getElementById('saveOk');
+    notice.classList.add('show');
+    setTimeout(function(){ notice.classList.remove('show'); }, 3000);
+  } else if(staffOk){
+    /* Staff saved but content failed — still show success for staff */
+    await renderStaff();
+    var notice = document.getElementById('saveOk');
+    notice.textContent = '* Staff guardado. Contenido no se pudo guardar.';
+    notice.classList.add('show');
+    setTimeout(function(){ notice.classList.remove('show'); notice.textContent = '* ¡Cambios guardados!'; }, 4000);
+  } else {
+    alert('* Error al guardar. Comprueba la consola.');
+  }
+}
+
+/* ── INIT ── */
+renderStaff();
+
+/* Section transition flash effect */
+(function(){
+  var sections = document.querySelectorAll('.ut-section, #cta, #inicio');
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        var flash = document.createElement('div');
+        flash.className = 'flash-overlay';
+        document.body.appendChild(flash);
+        setTimeout(function(){ flash.remove(); }, 700);
+      }
+    });
+  }, { threshold: 0.15 });
+  sections.forEach(function(s){ observer.observe(s); });
+})();
+</script>
+</body>
+</html>

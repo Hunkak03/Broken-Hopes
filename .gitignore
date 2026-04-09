@@ -1,0 +1,19 @@
+# Audio files (user-provided, may be copyrighted)
+assets/audio/*.mp3
+assets/audio/*.wav
+assets/audio/*.flac
+assets/audio/*.ogg
+
+# Gallery images (user-provided)
+assets/images/gallery/*.png
+assets/images/gallery/*.jpg
+assets/images/gallery/*.gif
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
