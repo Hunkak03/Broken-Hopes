@@ -16,8 +16,8 @@ La página funciona como el "cartel de presentación" del servidor: muestra las 
 - **Logros** desbloqueables con estados bloqueado/desbloqueado
 - **Noticias** con tarjetas de anuncios y tags
 - **Sección CTA** para unirse al Discord con efectos de screen-shake
-- **Panel de administración** oculto (`Shift+Alt+A`) con 4 pestañas editables: Staff, Stats, Contenido y Apariencia
-- **Easter eggs**: Konami Code (`↑↑↓↓←→←→BA`), click secreto en Flowey, mensaje en consola
+- **Panel de administración** oculto con 4 pestañas editables: Staff, Stats, Contenido y Apariencia
+- **Easter eggs**: Konami Code, click secreto en Flowey, mensaje en consola
 - **Música de fondo** (Snowdin Town) y efectos de sonido UI con toggle
 - **Partículas flotantes** pixel-art y estrellas CSS puras
 - **Scrollbar custom**, cursor de corazón y navegación por dots laterales
